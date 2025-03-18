@@ -158,33 +158,99 @@ class Isi_data extends CI_Controller
 
         redirect('Isi_data');
     }
-
-    public function edit($id_kriteria)
+    // Menampilkan form edit data siswa
+    public function edit($id)
     {
-        $data['page'] = "Kriteria";
-        $data['kriteria'] = $this->Kriteria_model->show($id_kriteria);
-        $this->load->view('kriteria/edit', $data);
+
+
+        $data['page'] = "Isi_data";
+        $this->load->model('Isi_data_model');
+
+        // Ambil data siswa berdasarkan ID
+        $data['siswa'] = $this->Isi_data_model->get_by_id($id);
+
+        if (!$data['siswa']) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger">Data tidak ditemukan!</div>');
+            redirect('Isi_data');
+            return;
+        }
+
+        // Ambil data enum untuk select option
+        $data['penghasilan_ortu'] = $this->Isi_data_model->get_enum_penghasilan();
+        $data['kepemilikan_rumah'] = $this->Isi_data_model->get_enum_kepemilikan();
+
+        $this->load->view('Isi_data/edit', $data);
     }
 
-    public function update($id_kriteria)
+    // Proses update data siswa
+    public function update($id)
     {
-        // TODO: implementasi update data berdasarkan $id_kriteria
-        $id_kriteria = $this->input->post('id_kriteria');
-        $data = array(
-            'keterangan' => $this->input->post('keterangan'),
-            'kode_kriteria' => $this->input->post('kode_kriteria'),
-            'jenis' => $this->input->post('jenis')
-        );
+        $this->load->model('Isi_data_model');
 
-        $this->Kriteria_model->update($id_kriteria, $data);
-        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil diupdate!</div>');
-        redirect('Kriteria');
+        // Validasi form input
+        $this->form_validation->set_rules('nisn', 'NISN', 'required');
+        $this->form_validation->set_rules('nama', 'Nama', 'required');
+        $this->form_validation->set_rules('penghasilan_ortu', 'Penghasilan Orang Tua', 'required');
+        $this->form_validation->set_rules('jumlah_tanggungan', 'Jumlah Tanggungan', 'required|integer');
+        $this->form_validation->set_rules('kepemilikan_rumah', 'Kepemilikan Rumah', 'required');
+        $this->form_validation->set_rules('nilai_rapor', 'Nilai Rata-Rata Rapor', 'required|numeric');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger">Periksa kembali inputan Anda.</div>');
+            redirect('Isi_data/edit/' . $id);
+            return;
+        }
+
+        // Cek apakah ada file yang diunggah
+        if (!empty($_FILES['file_kip']['name'])) {
+            $config['upload_path']   = './public/uploads/';
+            $config['allowed_types'] = 'jpg|jpeg|png|pdf';
+            $config['max_size']      = 2048; // 2MB
+            $config['file_name']     = time() . '_' . $_FILES["file_kip"]['name'];
+
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload('file_kip')) {
+                $error = $this->upload->display_errors();
+                $this->session->set_flashdata('message', '<div class="alert alert-danger">Upload Gagal! ' . $error . '</div>');
+                redirect('Isi_data/edit/' . $id);
+                return;
+            }
+
+            $upload_data = $this->upload->data();
+            $file_kip = $upload_data['file_name'];
+        } else {
+            // Jika tidak ada file baru, gunakan file lama
+            $file_kip = $this->input->post('file_kip_lama');
+        }
+
+        // Data yang akan diperbarui
+        $data = [
+            'nisn'              => $this->input->post('nisn'),
+            'nama'              => $this->input->post('nama'),
+            'penghasilan_ortu'  => $this->input->post('penghasilan_ortu'),
+            'jumlah_tanggungan' => $this->input->post('jumlah_tanggungan'),
+            'kepemilikan_rumah' => $this->input->post('kepemilikan_rumah'),
+            'nilai_rapor'       => $this->input->post('nilai_rapor'),
+            'file_kip'          => $file_kip,
+            'user_id'           => $this->session->userdata('id_user')
+        ];
+
+        // Simpan perubahan
+        if ($this->Isi_data_model->update($id, $data)) {
+            $this->session->set_flashdata('message', '<div class="alert alert-success">Data berhasil diperbarui.</div>');
+        } else {
+            $this->session->set_flashdata('message', '<div class="alert alert-danger">Gagal memperbarui data.</div>');
+        }
+
+        redirect('Isi_data');
     }
 
-    public function destroy($id_kriteria)
+
+    public function destroy($id)
     {
-        $this->Kriteria_model->delete($id_kriteria);
+        $this->Isi_data_model->delete($id);
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil dihapus!</div>');
-        redirect('Kriteria');
+        redirect('Isi_data');
     }
 }

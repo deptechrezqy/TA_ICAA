@@ -52,7 +52,7 @@
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Upload KIP:</label><br>
                 <?php if (!empty($siswa->file_kip)) { ?>
-                    <a href="<?= base_url('uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">Lihat File</a>
+                    <a href="<?= base_url('/public/uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">Lihat File</a>
                 <?php } else { ?>
                     <p class="text-muted">Tidak ada file diupload</p>
                 <?php } ?>

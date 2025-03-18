@@ -15,35 +15,24 @@ class Isi_data_model extends CI_Model
     {
         return $this->db->get_where('siswa', ['user_id' => $user_id])->row();
     }
-
+    public function get_by_id($id)
+    {
+        return $this->db->get_where('siswa', ['id' => $id])->row();
+    }
     public function insert($data = [])
     {
         return $this->db->insert('siswa', $data);
     }
 
-    public function show($id_kriteria)
+    public function update($id, $data)
     {
-        $this->db->where('id_kriteria', $id_kriteria);
-        $query = $this->db->get('kriteria');
-        return $query->row();
+        $this->db->where('id', $id);
+        return $this->db->update('siswa', $data);
     }
-
-    public function update($id_kriteria, $data = [])
+    public function delete($id)
     {
-        $ubah = array(
-            'keterangan' => $data['keterangan'],
-            'kode_kriteria' => $data['kode_kriteria'],
-            'jenis'  => $data['jenis']
-        );
-
-        $this->db->where('id_kriteria', $id_kriteria);
-        $this->db->update('kriteria', $ubah);
-    }
-
-    public function delete($id_kriteria)
-    {
-        $this->db->where('id_kriteria', $id_kriteria);
-        $this->db->delete('kriteria');
+        $this->db->where('id', $id);
+        $this->db->delete('siswa');
     }
 
     // Tambahkan fungsi ini untuk mengambil nilai ENUM penghasilan_orang_tua

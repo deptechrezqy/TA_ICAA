@@ -117,6 +117,14 @@
              <i class="fas fa-fw fa-chart-area"></i>
              <span>Data Hasil Akhir</span></a>
          </li>
+
+         <li class="nav-item <?php if ($page == 'Siswa') {
+                                echo 'active';
+                              } ?>">
+           <a class="nav-link" href="<?= base_url('Siswa'); ?>">
+             <i class="fas fa-fw fa-users-cog"></i>
+             <span>Data Siswa</span></a>
+         </li>
        <?php endif; ?>
 
        <?php if ($this->session->userdata('id_user_level') == '2'): ?>
