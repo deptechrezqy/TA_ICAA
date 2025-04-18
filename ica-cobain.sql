@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 13, 2025 at 03:40 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Host: localhost:3306
+-- Waktu pembuatan: 18 Apr 2025 pada 16.48
+-- Versi server: 8.0.30
+-- Versi PHP: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,63 +24,41 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `alternatif`
+-- Struktur dari tabel `alternatif`
 --
 
 CREATE TABLE `alternatif` (
-  `id_alternatif` int(11) NOT NULL,
+  `id_alternatif` int NOT NULL,
   `nama` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `alternatif`
---
-
-INSERT INTO `alternatif` (`id_alternatif`, `nama`) VALUES
-(59, 'Annisa'),
-(60, 'Salsa'),
-(61, 'Dina'),
-(62, 'Putri'),
-(63, 'Wanda');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hasil`
+-- Struktur dari tabel `hasil`
 --
 
 CREATE TABLE `hasil` (
-  `id_hasil` int(11) NOT NULL,
-  `id_alternatif` int(11) NOT NULL,
+  `id_hasil` int NOT NULL,
+  `id_alternatif` int NOT NULL,
   `nilai` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `hasil`
---
-
-INSERT INTO `hasil` (`id_hasil`, `id_alternatif`, `nilai`) VALUES
-(1, 59, -0.0258972),
-(2, 60, 0.0821875),
-(3, 61, -0.0160672),
-(4, 62, 0.033565),
-(5, 63, 0.0736133);
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kriteria`
+-- Struktur dari tabel `kriteria`
 --
 
 CREATE TABLE `kriteria` (
-  `id_kriteria` int(11) NOT NULL,
+  `id_kriteria` int NOT NULL,
   `keterangan` varchar(100) NOT NULL,
   `kode_kriteria` varchar(100) NOT NULL,
   `jenis` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `kriteria`
+-- Dumping data untuk tabel `kriteria`
 --
 
 INSERT INTO `kriteria` (`id_kriteria`, `keterangan`, `kode_kriteria`, `jenis`) VALUES
@@ -93,86 +71,50 @@ INSERT INTO `kriteria` (`id_kriteria`, `keterangan`, `kode_kriteria`, `jenis`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `penilaian`
+-- Struktur dari tabel `penilaian`
 --
 
 CREATE TABLE `penilaian` (
-  `id_penilaian` int(11) NOT NULL,
-  `id_alternatif` int(11) NOT NULL,
-  `id_kriteria` int(11) NOT NULL,
-  `id_sub_kriteria` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `penilaian`
---
-
-INSERT INTO `penilaian` (`id_penilaian`, `id_alternatif`, `id_kriteria`, `id_sub_kriteria`) VALUES
-(346, 59, 43, 171),
-(347, 59, 44, 174),
-(348, 59, 45, 177),
-(349, 59, 46, 178),
-(350, 59, 47, 187),
-(351, 60, 43, 170),
-(352, 60, 44, 172),
-(353, 60, 45, 175),
-(354, 60, 46, 181),
-(355, 60, 47, 185),
-(356, 61, 43, 171),
-(357, 61, 44, 173),
-(358, 61, 45, 176),
-(359, 61, 46, 178),
-(360, 61, 47, 185),
-(361, 62, 43, 171),
-(362, 62, 44, 174),
-(363, 62, 45, 177),
-(364, 62, 46, 181),
-(365, 62, 47, 187),
-(366, 63, 43, 170),
-(367, 63, 44, 188),
-(368, 63, 45, 175),
-(369, 63, 46, 181),
-(370, 63, 47, 184);
+  `id_penilaian` int NOT NULL,
+  `id_alternatif` int NOT NULL,
+  `id_kriteria` int NOT NULL,
+  `id_sub_kriteria` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `siswa`
+-- Struktur dari tabel `siswa`
 --
 
 CREATE TABLE `siswa` (
-  `nisn` int(11) NOT NULL,
-  `nama` text NOT NULL,
-  `penghasilan_ortu` enum('< 500.000','1.000.000 - 3.000.000','3.000.000 - 5.000.000','> 5.000.000') NOT NULL,
-  `jumlah_tanggungan` int(11) NOT NULL,
-  `kepemilikan_rumah` enum('Sewa / Kontrak','Milik Bersama','Milik Sendiri','') NOT NULL,
-  `nilai_rapor` varchar(5) NOT NULL,
-  `file_kip` varchar(255) NOT NULL,
-  `user_id` int(11) NOT NULL
+  `id` int NOT NULL,
+  `nisn` int NOT NULL,
+  `nama` text COLLATE utf8mb4_general_ci NOT NULL,
+  `penghasilan_ortu` enum('> Rp. 5.000.000','Rp. 3.000.000 - Rp. 5.000.000','Rp. 1.000.000 - Rp. 3.000.000','< Rp. 500.000') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `jumlah_tanggungan` int NOT NULL,
+  `kepemilikan_rumah` enum('Sewa/Kontrak','Milik Bersama','Hak Milik','') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nilai_rapor` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_kip` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `user_id` int NOT NULL,
+  `verifikasi_file` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `siswa`
---
-
-INSERT INTO `siswa` (`nisn`, `nama`, `penghasilan_ortu`, `jumlah_tanggungan`, `kepemilikan_rumah`, `nilai_rapor`, `file_kip`, `user_id`) VALUES
-(12345678, 'rety', '< 500.000', 3, 'Sewa / Kontrak', '90', '1741343830_20200701_161944.jpg', 7);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sub_kriteria`
+-- Struktur dari tabel `sub_kriteria`
 --
 
 CREATE TABLE `sub_kriteria` (
-  `id_sub_kriteria` int(11) NOT NULL,
-  `id_kriteria` int(11) NOT NULL,
+  `id_sub_kriteria` int NOT NULL,
+  `id_kriteria` int NOT NULL,
   `deskripsi` varchar(200) NOT NULL,
   `nilai` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `sub_kriteria`
+-- Dumping data untuk tabel `sub_kriteria`
 --
 
 INSERT INTO `sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `deskripsi`, `nilai`) VALUES
@@ -195,39 +137,41 @@ INSERT INTO `sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `deskripsi`, `nila
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `user`
 --
 
 CREATE TABLE `user` (
-  `id_user` int(11) NOT NULL,
-  `id_user_level` int(11) NOT NULL,
+  `id_user` int NOT NULL,
+  `id_user_level` int NOT NULL,
   `nama` varchar(200) NOT NULL,
   `email` varchar(100) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `password` varchar(100) NOT NULL,
+  `verifikasi` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
-INSERT INTO `user` (`id_user`, `id_user_level`, `nama`, `email`, `username`, `password`) VALUES
-(1, 1, 'Admin', 'admin@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3'),
-(7, 2, 'User', 'user@gmail.com', 'user', 'ee11cbb19052e40b07aac0ca060c23ee');
+INSERT INTO `user` (`id_user`, `id_user_level`, `nama`, `email`, `username`, `password`, `verifikasi`) VALUES
+(1, 1, 'Admin', 'admin@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3', 1),
+(7, 2, 'User', 'user@gmail.com', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 1),
+(9, 2, 'icaaa', 'icaaa@gmail.com', 'icaa', '25d55ad283aa400af464c76d713c07ad', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_level`
+-- Struktur dari tabel `user_level`
 --
 
 CREATE TABLE `user_level` (
-  `id_user_level` int(11) NOT NULL,
+  `id_user_level` int NOT NULL,
   `user_level` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `user_level`
+-- Dumping data untuk tabel `user_level`
 --
 
 INSERT INTO `user_level` (`id_user_level`, `user_level`) VALUES
@@ -239,26 +183,26 @@ INSERT INTO `user_level` (`id_user_level`, `user_level`) VALUES
 --
 
 --
--- Indexes for table `alternatif`
+-- Indeks untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
   ADD PRIMARY KEY (`id_alternatif`);
 
 --
--- Indexes for table `hasil`
+-- Indeks untuk tabel `hasil`
 --
 ALTER TABLE `hasil`
   ADD PRIMARY KEY (`id_hasil`),
   ADD KEY `id_alternatif` (`id_alternatif`);
 
 --
--- Indexes for table `kriteria`
+-- Indeks untuk tabel `kriteria`
 --
 ALTER TABLE `kriteria`
   ADD PRIMARY KEY (`id_kriteria`);
 
 --
--- Indexes for table `penilaian`
+-- Indeks untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
   ADD PRIMARY KEY (`id_penilaian`),
@@ -267,90 +211,96 @@ ALTER TABLE `penilaian`
   ADD KEY `id_sub_kriteria` (`id_sub_kriteria`);
 
 --
--- Indexes for table `siswa`
+-- Indeks untuk tabel `siswa`
 --
 ALTER TABLE `siswa`
-  ADD PRIMARY KEY (`nisn`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `fk_user_id` (`user_id`);
 
 --
--- Indexes for table `sub_kriteria`
+-- Indeks untuk tabel `sub_kriteria`
 --
 ALTER TABLE `sub_kriteria`
   ADD PRIMARY KEY (`id_sub_kriteria`),
   ADD KEY `id_kriteria` (`id_kriteria`);
 
 --
--- Indexes for table `user`
+-- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`),
   ADD KEY `id_user_level` (`id_user_level`);
 
 --
--- Indexes for table `user_level`
+-- Indeks untuk tabel `user_level`
 --
 ALTER TABLE `user_level`
   ADD PRIMARY KEY (`id_user_level`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `alternatif`
+-- AUTO_INCREMENT untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
-  MODIFY `id_alternatif` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id_alternatif` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
--- AUTO_INCREMENT for table `hasil`
+-- AUTO_INCREMENT untuk tabel `hasil`
 --
 ALTER TABLE `hasil`
-  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `kriteria`
+-- AUTO_INCREMENT untuk tabel `kriteria`
 --
 ALTER TABLE `kriteria`
-  MODIFY `id_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_kriteria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
--- AUTO_INCREMENT for table `penilaian`
+-- AUTO_INCREMENT untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
-  MODIFY `id_penilaian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=371;
+  MODIFY `id_penilaian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=379;
 
 --
--- AUTO_INCREMENT for table `sub_kriteria`
+-- AUTO_INCREMENT untuk tabel `siswa`
+--
+ALTER TABLE `siswa`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT untuk tabel `sub_kriteria`
 --
 ALTER TABLE `sub_kriteria`
-  MODIFY `id_sub_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
+  MODIFY `id_sub_kriteria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=190;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `user_level`
+-- AUTO_INCREMENT untuk tabel `user_level`
 --
 ALTER TABLE `user_level`
-  MODIFY `id_user_level` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user_level` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `hasil`
+-- Ketidakleluasaan untuk tabel `hasil`
 --
 ALTER TABLE `hasil`
   ADD CONSTRAINT `hasil_ibfk_1` FOREIGN KEY (`id_alternatif`) REFERENCES `alternatif` (`id_alternatif`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `penilaian`
+-- Ketidakleluasaan untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
   ADD CONSTRAINT `penilaian_ibfk_1` FOREIGN KEY (`id_alternatif`) REFERENCES `alternatif` (`id_alternatif`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -358,19 +308,19 @@ ALTER TABLE `penilaian`
   ADD CONSTRAINT `penilaian_ibfk_3` FOREIGN KEY (`id_sub_kriteria`) REFERENCES `sub_kriteria` (`id_sub_kriteria`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `siswa`
+-- Ketidakleluasaan untuk tabel `siswa`
 --
 ALTER TABLE `siswa`
   ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `sub_kriteria`
+-- Ketidakleluasaan untuk tabel `sub_kriteria`
 --
 ALTER TABLE `sub_kriteria`
   ADD CONSTRAINT `sub_kriteria_ibfk_1` FOREIGN KEY (`id_kriteria`) REFERENCES `kriteria` (`id_kriteria`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `user`
+-- Ketidakleluasaan untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`id_user_level`) REFERENCES `user_level` (`id_user_level`) ON DELETE CASCADE ON UPDATE CASCADE;

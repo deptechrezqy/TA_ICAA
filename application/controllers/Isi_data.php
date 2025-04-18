@@ -13,11 +13,11 @@ class Isi_data extends CI_Controller
         $this->load->model('Isi_data_model');
 
         if ($this->session->userdata('id_user_level') != "2") {
-?>
-            <script type="text/javascript">
-                alert('Anda tidak berhak mengakses halaman ini!');
-                window.location = '<?php echo base_url("Login/home"); ?>'
-            </script>
+            ?>
+<script type="text/javascript">
+alert('Anda tidak berhak mengakses halaman ini!');
+window.location = '<?php echo base_url("Login/home"); ?>'
+</script>
 <?php
         }
     }
@@ -102,10 +102,10 @@ class Isi_data extends CI_Controller
 
 
         // Konfigurasi upload file
-        $config['upload_path']   = './public/uploads/';
+        $config['upload_path'] = './public/uploads/';
         $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-        $config['max_size']      = 2048; // 2MB
-        $config['file_name']     = time() . '_' . $_FILES["file_kip"]['name']; // Nama unik
+        $config['max_size'] = 2048; // 2MB
+        $config['file_name'] = time() . '_' . $_FILES["file_kip"]['name']; // Nama unik
 
         $this->load->library('upload', $config);
 
@@ -127,14 +127,14 @@ class Isi_data extends CI_Controller
 
         // Data yang akan disimpan
         $data = [
-            'nisn'              => $nisn,
-            'nama'              => $this->input->post('nama'),
-            'penghasilan_ortu'  => $this->input->post('penghasilan_ortu'),
+            'nisn' => $nisn,
+            'nama' => $this->input->post('nama'),
+            'penghasilan_ortu' => $this->input->post('penghasilan_ortu'),
             'jumlah_tanggungan' => $this->input->post('jumlah_tanggungan'),
             'kepemilikan_rumah' => $this->input->post('kepemilikan_rumah'),
-            'nilai_rapor'       => $this->input->post('nilai_rapor'),
-            'file_kip'          => $file_kip,
-            'user_id'           => $this->session->userdata('id_user') // Pastikan session menyimpan id_user
+            'nilai_rapor' => $this->input->post('nilai_rapor'),
+            'file_kip' => $file_kip,
+            'user_id' => $this->session->userdata('id_user') // Pastikan session menyimpan id_user
         ];
 
         // Simpan data ke database
@@ -161,8 +161,6 @@ class Isi_data extends CI_Controller
     // Menampilkan form edit data siswa
     public function edit($id)
     {
-
-
         $data['page'] = "Isi_data";
         $this->load->model('Isi_data_model');
 
@@ -186,7 +184,6 @@ class Isi_data extends CI_Controller
     public function update($id)
     {
         $this->load->model('Isi_data_model');
-
         // Validasi form input
         $this->form_validation->set_rules('nisn', 'NISN', 'required');
         $this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -194,29 +191,24 @@ class Isi_data extends CI_Controller
         $this->form_validation->set_rules('jumlah_tanggungan', 'Jumlah Tanggungan', 'required|integer');
         $this->form_validation->set_rules('kepemilikan_rumah', 'Kepemilikan Rumah', 'required');
         $this->form_validation->set_rules('nilai_rapor', 'Nilai Rata-Rata Rapor', 'required|numeric');
-
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger">Periksa kembali inputan Anda.</div>');
             redirect('Isi_data/edit/' . $id);
             return;
         }
-
         // Cek apakah ada file yang diunggah
         if (!empty($_FILES['file_kip']['name'])) {
-            $config['upload_path']   = './public/uploads/';
+            $config['upload_path'] = './public/uploads/';
             $config['allowed_types'] = 'jpg|jpeg|png|pdf';
-            $config['max_size']      = 2048; // 2MB
-            $config['file_name']     = time() . '_' . $_FILES["file_kip"]['name'];
-
+            $config['max_size'] = 2048; // 2MB
+            $config['file_name'] = time() . '_' . $_FILES["file_kip"]['name'];
             $this->load->library('upload', $config);
-
             if (!$this->upload->do_upload('file_kip')) {
                 $error = $this->upload->display_errors();
                 $this->session->set_flashdata('message', '<div class="alert alert-danger">Upload Gagal! ' . $error . '</div>');
                 redirect('Isi_data/edit/' . $id);
                 return;
             }
-
             $upload_data = $this->upload->data();
             $file_kip = $upload_data['file_name'];
         } else {
@@ -226,14 +218,15 @@ class Isi_data extends CI_Controller
 
         // Data yang akan diperbarui
         $data = [
-            'nisn'              => $this->input->post('nisn'),
-            'nama'              => $this->input->post('nama'),
-            'penghasilan_ortu'  => $this->input->post('penghasilan_ortu'),
+            'nisn' => $this->input->post('nisn'),
+            'nama' => $this->input->post('nama'),
+            'penghasilan_ortu' => $this->input->post('penghasilan_ortu'),
             'jumlah_tanggungan' => $this->input->post('jumlah_tanggungan'),
             'kepemilikan_rumah' => $this->input->post('kepemilikan_rumah'),
-            'nilai_rapor'       => $this->input->post('nilai_rapor'),
-            'file_kip'          => $file_kip,
-            'user_id'           => $this->session->userdata('id_user')
+            'nilai_rapor' => $this->input->post('nilai_rapor'),
+            'file_kip' => $file_kip,
+            'user_id' => $this->session->userdata('id_user'),
+            'verifikasi_file' => 0,
         ];
 
         // Simpan perubahan

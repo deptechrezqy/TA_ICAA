@@ -22,26 +22,35 @@ class Login extends CI_Controller
 
     public function login()
     {
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $passwordx = md5($password);
-        $set = $this->Login_model->login($username, $passwordx);
-        if ($set) {
 
+        // Gunakan Login_model untuk login (verifikasi = 1)
+        $user = $this->Login_model->login($username, $passwordx);
+
+        if ($user) {
+            // Login sukses
             $log = [
-                'id_user' => $set->id_user,
-                'username' => $set->username,
-                'id_user_level' => $set->id_user_level,
+                'id_user' => $user->id_user,
+                'username' => $user->username,
+                'id_user_level' => $user->id_user_level,
                 'status' => 'Logged'
             ];
             $this->session->set_userdata($log);
             redirect('Login/home');
         } else {
-            $this->session->set_flashdata('message', 'Username atau Password Salah');
+            // Kalau gagal login, cek apakah user belum terverifikasi
+            $check_user = $this->db->get_where('user', ['username' => $username])->row();
+            if ($check_user && $check_user->verifikasi == 0) {
+                $this->session->set_flashdata('login_message', 'Akun Anda belum terverifikasi.');
+            } else {
+                $this->session->set_flashdata('login_message', 'Username atau Password salah.');
+            }
             redirect('login');
         }
     }
+
 
     public function logout()
     {

@@ -21,53 +21,73 @@
         <div class="row">
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">NISN</label>
-                <input type="text" name="nisn" class="form-control" value="<?= isset($siswa) ? $siswa->nisn : ''; ?>" readonly />
+                <input type="text" name="nisn" class="form-control" value="<?= isset($siswa) ? $siswa->nisn : ''; ?>"
+                    readonly />
             </div>
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Nama Siswa</label>
-                <input type="text" name="nama" class="form-control" value="<?= isset($siswa) ? $siswa->nama : ''; ?>" readonly />
+                <input type="text" name="nama" class="form-control" value="<?= isset($siswa) ? $siswa->nama : ''; ?>"
+                    readonly />
             </div>
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Penghasilan Orang Tua</label>
-                <input type="text" name="penghasilan_ortu" class="form-control" value="<?= isset($siswa) ? $siswa->penghasilan_ortu : ''; ?>" readonly />
+                <input type="text" name="penghasilan_ortu" class="form-control"
+                    value="<?= isset($siswa) ? $siswa->penghasilan_ortu : ''; ?>" readonly />
             </div>
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Tanggungan Orang Tua</label>
-                <input type="number" name="jumlah_tanggungan" class="form-control" value="<?= isset($siswa) ? $siswa->jumlah_tanggungan : ''; ?>" readonly />
+                <input type="number" name="jumlah_tanggungan" class="form-control"
+                    value="<?= isset($siswa) ? $siswa->jumlah_tanggungan : ''; ?>" readonly />
             </div>
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Kepemilikan Rumah</label>
-                <input type="text" name="kepemilikan_rumah" class="form-control" value="<?= isset($siswa) ? $siswa->kepemilikan_rumah : ''; ?>" readonly />
+                <input type="text" name="kepemilikan_rumah" class="form-control"
+                    value="<?= isset($siswa) ? $siswa->kepemilikan_rumah : ''; ?>" readonly />
             </div>
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Nilai Rata-Rata Rapor</label>
-                <input type="text" name="nilai_rapor" class="form-control" value="<?= isset($siswa) ? $siswa->nilai_rapor : ''; ?>" readonly />
+                <input type="text" name="nilai_rapor" class="form-control"
+                    value="<?= isset($siswa) ? $siswa->nilai_rapor : ''; ?>" readonly />
             </div>
 
             <div class="form-group col-md-4">
-                <label class="font-weight-bold">Upload KIP:</label><br>
-                <?php if (!empty($siswa->file_kip)) { ?>
-                    <a href="<?= base_url('/public/uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">Lihat File</a>
-                <?php } else { ?>
-                    <p class="text-muted">Tidak ada file diupload</p>
-                <?php } ?>
+                <label class="font-weight-bold">
+                    Upload KIP:
+                    <?php if (isset($siswa) && $siswa->verifikasi_file == 2): ?>
+                    <br>
+                    <span class="text-danger">verifikasi file gagal, harap upload ulang</span>
+                    <?php endif; ?>
+                </label><br>
+
+                <?php if (!empty($siswa->file_kip)): ?>
+                <a href="<?= base_url('public/uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">
+                    Lihat File
+                </a>
+                <?php else: ?>
+                <p class="text-muted">Tidak ada file diupload</p>
+                <?php endif; ?>
             </div>
+
         </div>
 
         <div class="card-footer text-right">
             <?php if ($siswa) { ?>
-                <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ?? '')); ?>" class="btn btn-warning">
-                    <i class="fa fa-edit"></i> Edit Data
-                </a>
+            <?php if ($siswa->verifikasi_file != 1) { ?>
+            <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ?? '')); ?>" class="btn btn-warning">
+                <i class="fa fa-edit"></i> Edit Data
+            </a>
+            <?php } ?>
+
+
             <?php } else { ?>
-                <a href="<?= base_url('Isi_data/create'); ?>" class="btn btn-success">
-                    <i class="fa fa-plus"></i> Tambah Data
-                </a>
+            <a href="<?= base_url('Isi_data/create'); ?>" class="btn btn-success">
+                <i class="fa fa-plus"></i> Tambah Data
+            </a>
             <?php } ?>
         </div>
     </div>
