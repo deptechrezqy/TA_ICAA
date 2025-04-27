@@ -3,15 +3,15 @@ $this->load->view('layouts/header_admin');
 //Matrix Keputusan (X)
 $matriks_x = array();
 foreach ($kriterias as $kriteria):
-	foreach ($alternatifs as $alternatif):
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
+    foreach ($alternatifs as $alternatif):
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
 
-		$data_pencocokan = $this->Perhitungan_model->data_nilai($id_alternatif, $id_kriteria);
-		$nilai = $data_pencocokan['nilai'];
+        $data_pencocokan = $this->Perhitungan_model->data_nilai($id_alternatif, $id_kriteria);
+        $nilai = $data_pencocokan['nilai'];
 
-		$matriks_x[$id_kriteria][$id_alternatif] = $nilai;
-	endforeach;
+        $matriks_x[$id_kriteria][$id_alternatif] = $nilai;
+    endforeach;
 endforeach;
 
 // METODE ENTROPY
@@ -20,34 +20,34 @@ endforeach;
 $matriks_k = array();
 $total_k = array();
 foreach ($kriterias as $kriteria):
-	$t_r = 0;
-	$id_kriteria = $kriteria->id_kriteria;
-	foreach ($alternatifs as $alternatif):
-		$id_alternatif = $alternatif->id_alternatif;
+    $t_r = 0;
+    $id_kriteria = $kriteria->id_kriteria;
+    foreach ($alternatifs as $alternatif):
+        $id_alternatif = $alternatif->id_alternatif;
 
-		$nilai_x = $matriks_x[$id_kriteria][$id_alternatif];
-		$max = max($matriks_x[$id_kriteria]);
+        $nilai_x = $matriks_x[$id_kriteria][$id_alternatif];
+        $max = max($matriks_x[$id_kriteria]);
 
-		$nilai_r = $nilai_x / $max;
-		$matriks_k[$id_kriteria][$id_alternatif] = $nilai_r;
-		$t_r += $nilai_r;
-	endforeach;
-	$total_k[$id_kriteria] = $t_r;
+        $nilai_r = $nilai_x / $max;
+        $matriks_k[$id_kriteria][$id_alternatif] = $nilai_r;
+        $t_r += $nilai_r;
+    endforeach;
+    $total_k[$id_kriteria] = $t_r;
 endforeach;
 
 //Matriks Ternormalisasi aij
 $matriks_a = array();
 foreach ($kriterias as $kriteria):
-	foreach ($alternatifs as $alternatif):
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
+    foreach ($alternatifs as $alternatif):
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
 
-		$nilai_r = $matriks_k[$id_kriteria][$id_alternatif];
-		$t_r = $total_k[$id_kriteria];
+        $nilai_r = $matriks_k[$id_kriteria][$id_alternatif];
+        $t_r = $total_k[$id_kriteria];
 
-		$nilai_a = $nilai_r / $t_r;
-		$matriks_a[$id_kriteria][$id_alternatif] = $nilai_a;
-	endforeach;
+        $nilai_a = $nilai_r / $t_r;
+        $matriks_a[$id_kriteria][$id_alternatif] = $nilai_a;
+    endforeach;
 endforeach;
 
 //Perhitungan nilai entropy untuk setiap kriteria
@@ -55,40 +55,50 @@ $nilai_e = array();
 $total_e = array();
 $entropy = array();
 foreach ($kriterias as $kriteria):
-	$t_e = 0;
-	$id_kriteria = $kriteria->id_kriteria;
-	foreach ($alternatifs as $alternatif):
-		$id_alternatif = $alternatif->id_alternatif;
+    $t_e = 0;
+    $id_kriteria = $kriteria->id_kriteria;
+    foreach ($alternatifs as $alternatif):
+        $id_alternatif = $alternatif->id_alternatif;
 
-		$nilai_a = $matriks_a[$id_kriteria][$id_alternatif];
-		$e = !is_nan($nilai_a * log($nilai_a)) ? $nilai_a * log($nilai_a) : 0;
+        $nilai_a = $matriks_a[$id_kriteria][$id_alternatif];
 
-		$nilai_e[$id_kriteria][$id_alternatif] = $e;
-		$t_e += $e;
-	endforeach;
+        // Menghitung nilai e, pastikan tidak menghasilkan NaN
+        $e = !is_nan($nilai_a * log($nilai_a)) ? $nilai_a * log($nilai_a) : 0;
 
-	$total_e[$id_kriteria] = $t_e;
-	$entropy[$id_kriteria] = (-1 / log(count($alternatifs))) * $t_e;
+        $nilai_e[$id_kriteria][$id_alternatif] = $e;
+        $t_e += $e;
+    endforeach;
+
+    $total_e[$id_kriteria] = $t_e;
+
+    // Menghitung entropy dengan menghindari pembagian dengan nol
+    if (count($alternatifs) > 1) {
+        $entropy[$id_kriteria] = (-1 / log(count($alternatifs))) * $t_e;
+    } else {
+        // Jika hanya ada satu alternatif, set entropy ke 0 (atau nilai lain yang sesuai)
+        $entropy[$id_kriteria] = 0;
+    }
 endforeach;
+
 
 //Perhitungan dispresi untuk setiap kriteria 𝐷Dj
 $nilai_d = array();
 $total_d = 0;
 foreach ($kriterias as $kriteria):
-	$id_kriteria = $kriteria->id_kriteria;
-	$ent = $entropy[$id_kriteria];
-	$d = 1 - $ent;
-	$nilai_d[$id_kriteria] = $d;
-	$total_d += $d;
+    $id_kriteria = $kriteria->id_kriteria;
+    $ent = $entropy[$id_kriteria];
+    $d = 1 - $ent;
+    $nilai_d[$id_kriteria] = $d;
+    $total_d += $d;
 endforeach;
 
 //Normalisasi nilai dispersi Wj
 $nilai_w = array();
 foreach ($kriterias as $kriteria):
-	$id_kriteria = $kriteria->id_kriteria;
-	$d = $nilai_d[$id_kriteria];
-	$w = $d / $total_d;
-	$nilai_w[$id_kriteria] = $w;
+    $id_kriteria = $kriteria->id_kriteria;
+    $d = $nilai_d[$id_kriteria];
+    $w = $d / $total_d;
+    $nilai_w[$id_kriteria] = $w;
 endforeach;
 
 
@@ -98,55 +108,55 @@ endforeach;
 $matriks_r = array();
 foreach ($matriks_x as $id_kriteria => $penilaians):
 
-	$jumlah_kuadrat = 0;
-	foreach ($penilaians as $penilaian):
-		$jumlah_kuadrat += pow($penilaian, 2);
-	endforeach;
-	$akar_kuadrat = sqrt($jumlah_kuadrat);
+    $jumlah_kuadrat = 0;
+    foreach ($penilaians as $penilaian):
+        $jumlah_kuadrat += pow($penilaian, 2);
+    endforeach;
+    $akar_kuadrat = sqrt($jumlah_kuadrat);
 
-	foreach ($penilaians as $id_alternatif => $penilaian):
-		$matriks_r[$id_kriteria][$id_alternatif] = $penilaian / $akar_kuadrat;
-	endforeach;
+    foreach ($penilaians as $id_alternatif => $penilaian):
+        $matriks_r[$id_kriteria][$id_alternatif] = $penilaian / $akar_kuadrat;
+    endforeach;
 
 endforeach;
 
 //Matriks Normalisasi Terbobot
 $matriks_rb = array();
 foreach ($alternatifs as $alternatif):
-	foreach ($kriterias as $kriteria):
+    foreach ($kriterias as $kriteria):
 
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
-		$bobot = $nilai_w[$id_kriteria];
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
+        $bobot = $nilai_w[$id_kriteria];
 
-		$nilai_r = $matriks_r[$id_kriteria][$id_alternatif];
-		$matriks_rb[$id_kriteria][$id_alternatif] = $bobot * $nilai_r;
+        $nilai_r = $matriks_r[$id_kriteria][$id_alternatif];
+        $matriks_rb[$id_kriteria][$id_alternatif] = $bobot * $nilai_r;
 
-	endforeach;
+    endforeach;
 endforeach;
 
 //Nilai Yi
 $nilai_y_max = array();
 $nilai_y_min = array();
 foreach ($alternatifs as $alternatif):
-	$total_max = 0;
-	$total_min = 0;
-	foreach ($kriterias as $kriteria):
+    $total_max = 0;
+    $total_min = 0;
+    foreach ($kriterias as $kriteria):
 
-		$id_alternatif = $alternatif->id_alternatif;
-		$id_kriteria = $kriteria->id_kriteria;
-		$type_kriteria = $kriteria->jenis;
+        $id_alternatif = $alternatif->id_alternatif;
+        $id_kriteria = $kriteria->id_kriteria;
+        $type_kriteria = $kriteria->jenis;
 
-		$nilai_rb = $matriks_rb[$id_kriteria][$id_alternatif];
+        $nilai_rb = $matriks_rb[$id_kriteria][$id_alternatif];
 
-		if ($type_kriteria == 'Benefit'):
-			$total_max += $nilai_rb;
-		elseif ($type_kriteria == 'Cost'):
-			$total_min += $nilai_rb;
-		endif;
-	endforeach;
-	$nilai_y_max[$id_kriteria][$id_alternatif] = $total_max;
-	$nilai_y_min[$id_kriteria][$id_alternatif] = $total_min;
+        if ($type_kriteria == 'Benefit'):
+            $total_max += $nilai_rb;
+        elseif ($type_kriteria == 'Cost'):
+            $total_min += $nilai_rb;
+        endif;
+    endforeach;
+    $nilai_y_max[$id_kriteria][$id_alternatif] = $total_max;
+    $nilai_y_min[$id_kriteria][$id_alternatif] = $total_min;
 endforeach;
 
 ?>
@@ -185,35 +195,35 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_x[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_x[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                             <tr align="center">
                                 <td class="bg-light" colspan="2">MAX</td>
                                 <?php
-								foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									echo '<td class="bg-light">';
-									echo max($matriks_x[$id_kriteria]);
-									echo '</td>';
-								endforeach
-								?>
+                                foreach ($kriterias as $kriteria):
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    echo '<td class="bg-light">';
+                                    echo max($matriks_x[$id_kriteria]);
+                                    echo '</td>';
+                                endforeach
+                                ?>
                             </tr>
                         </tbody>
                     </table>
@@ -241,35 +251,35 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_k[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach;
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_k[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach;
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                             <tr align="center">
                                 <td class="bg-light" colspan="2">TOTAL</td>
                                 <?php
-								foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									echo '<td class="bg-light">';
-									echo $total_k[$id_kriteria];
-									echo '</td>';
-								endforeach
-								?>
+                                foreach ($kriterias as $kriteria):
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    echo '<td class="bg-light">';
+                                    echo $total_k[$id_kriteria];
+                                    echo '</td>';
+                                endforeach
+                                ?>
                             </tr>
                         </tbody>
                     </table>
@@ -297,25 +307,25 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_a[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach;
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_a[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach;
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -342,46 +352,46 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $nilai_e[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach;
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $nilai_e[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach;
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                             <tr align="center">
                                 <td class="bg-light" colspan="2">TOTAL</td>
                                 <?php
-								foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									echo '<td class="bg-light">';
-									echo $total_e[$id_kriteria];
-									echo '</td>';
-								endforeach
-								?>
+                                foreach ($kriterias as $kriteria):
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    echo '<td class="bg-light">';
+                                    echo $total_e[$id_kriteria];
+                                    echo '</td>';
+                                endforeach
+                                ?>
                             </tr>
                             <tr align="center">
                                 <td class="bg-light" colspan="2">ENTROPY</td>
                                 <?php
-								foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									echo '<td class="bg-light">';
-									echo $entropy[$id_kriteria];
-									echo '</td>';
-								endforeach
-								?>
+                                foreach ($kriterias as $kriteria):
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    echo '<td class="bg-light">';
+                                    echo $entropy[$id_kriteria];
+                                    echo '</td>';
+                                endforeach
+                                ?>
                             </tr>
                         </tbody>
                     </table>
@@ -410,8 +420,8 @@ endforeach;
                         <tbody>
                             <tr align="center">
                                 <?php foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									?>
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    ?>
                                 <td><?php echo $nilai_d[$id_kriteria]; ?></td>
                                 <?php endforeach ?>
                                 <td><?php echo $total_d; ?></td>
@@ -443,25 +453,25 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($kriterias as $kriteria):
-								$id_kriteria = $kriteria->id_kriteria;
-								?>
+                            $no = 1;
+                            foreach ($kriterias as $kriteria):
+                                $id_kriteria = $kriteria->id_kriteria;
+                                ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td><?php echo $kriteria->kode_kriteria ?></td>
                                 <td><?php echo $kriteria->keterangan ?></td>
                                 <td><?php echo $kriteria->jenis ?></td>
                                 <?php
-									echo '<td>';
-									echo $nilai_w[$id_kriteria];
-									echo '</td>';
-									?>
+                                    echo '<td>';
+                                    echo $nilai_w[$id_kriteria];
+                                    echo '</td>';
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -489,25 +499,25 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_x[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_x[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -533,13 +543,13 @@ endforeach;
                         <tbody>
                             <tr align="center">
                                 <?php
-								foreach ($kriterias as $kriteria):
-									$id_kriteria = $kriteria->id_kriteria;
-									?>
+                                foreach ($kriterias as $kriteria):
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    ?>
                                 <td>
                                     <?php
-										echo $nilai_w[$id_kriteria];
-										?>
+                                        echo $nilai_w[$id_kriteria];
+                                        ?>
                                 </td>
                                 <?php endforeach ?>
                             </tr>
@@ -569,25 +579,25 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_r[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach;
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_r[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach;
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -616,25 +626,25 @@ endforeach;
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										echo '<td>';
-										echo $matriks_rb[$id_kriteria][$id_alternatif];
-										echo '</td>';
-									endforeach;
-									?>
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        echo '<td>';
+                                        echo $matriks_rb[$id_kriteria][$id_alternatif];
+                                        echo '</td>';
+                                    endforeach;
+                                    ?>
                             </tr>
                             <?php
-								$no++;
-							endforeach
-							?>
+                                $no++;
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -656,45 +666,45 @@ endforeach;
                                 <th>Nama Alternatif</th>
                                 <th>Maximun (
                                     <?php foreach ($kriterias as $kriteria):
-										if ($kriteria->jenis == "Benefit") {
-											echo $kriteria->kode_kriteria . " ";
-										}
-									endforeach
-									?>)
+                                        if ($kriteria->jenis == "Benefit") {
+                                            echo $kriteria->kode_kriteria . " ";
+                                        }
+                                    endforeach
+                                    ?>)
                                 </th>
                                 <th>Minimum (
                                     <?php foreach ($kriterias as $kriteria):
-										if ($kriteria->jenis == "Cost") {
-											echo $kriteria->kode_kriteria . " ";
-										}
-									endforeach
-									?>)
+                                        if ($kriteria->jenis == "Cost") {
+                                            echo $kriteria->kode_kriteria . " ";
+                                        }
+                                    endforeach
+                                    ?>)
                                 </th>
                                 <th>Yi = Max - Min</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-							$no = 1;
-							$this->Perhitungan_model->hapus_hasil();
-							foreach ($alternatifs as $alternatif): ?>
+                            $no = 1;
+                            $this->Perhitungan_model->hapus_hasil();
+                            foreach ($alternatifs as $alternatif): ?>
                             <tr align="center">
                                 <td><?= $no; ?></td>
                                 <td align="left"><?= $alternatif->nama ?></td>
                                 <?php
-									$total_max = 0;
-									$total_min = 0;
-									foreach ($kriterias as $kriteria):
-										$id_alternatif = $alternatif->id_alternatif;
-										$id_kriteria = $kriteria->id_kriteria;
-										$nilai_rb = $matriks_rb[$id_kriteria][$id_alternatif];
-										if ($kriteria->jenis == "Benefit") {
-											$total_max += $nilai_rb;
-										} else {
-											$total_min += $nilai_rb;
-										}
-									endforeach;
-									?>
+                                    $total_max = 0;
+                                    $total_min = 0;
+                                    foreach ($kriterias as $kriteria):
+                                        $id_alternatif = $alternatif->id_alternatif;
+                                        $id_kriteria = $kriteria->id_kriteria;
+                                        $nilai_rb = $matriks_rb[$id_kriteria][$id_alternatif];
+                                        if ($kriteria->jenis == "Benefit") {
+                                            $total_max += $nilai_rb;
+                                        } else {
+                                            $total_min += $nilai_rb;
+                                        }
+                                    endforeach;
+                                    ?>
                                 <td>
                                     <?= $total_max; ?>
                                 </td>
@@ -706,14 +716,14 @@ endforeach;
                                 </td>
                             </tr>
                             <?php
-								$no++;
-								$hasil_akhir = [
-									'id_alternatif' => $alternatif->id_alternatif,
-									'nilai' => $hasil
-								];
-								$this->Perhitungan_model->insert_hasil($hasil_akhir);
-							endforeach
-							?>
+                                $no++;
+                                $hasil_akhir = [
+                                    'id_alternatif' => $alternatif->id_alternatif,
+                                    'nilai' => $hasil
+                                ];
+                                $this->Perhitungan_model->insert_hasil($hasil_akhir);
+                            endforeach
+                            ?>
                         </tbody>
                     </table>
                 </div>

@@ -45,7 +45,11 @@ window.location = '<?php echo base_url("Login/home"); ?>'
         // Update status verifikasi
         $this->db->update('siswa', ['verifikasi_file' => 1], ['nisn' => $nisn]);
         // Insert ke tabel alternatif
-        $id_alternatif = $this->Alternatif_model->insert(['nama' => $user->nama]);
+        $id_alternatif = $this->Alternatif_model->insert([
+            'nama' => $user->nama,
+            'siswa_id' => $user->id,
+
+        ]);
         // Mapping kriteria ke field siswa
         $kriteria_map = [
             'C1' => isset($user->file_kip) ? 'Ada' : 'Tidak Ada',

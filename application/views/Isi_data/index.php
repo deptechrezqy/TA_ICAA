@@ -54,14 +54,18 @@
                 <input type="text" name="nilai_rapor" class="form-control"
                     value="<?= isset($siswa) ? $siswa->nilai_rapor : ''; ?>" readonly />
             </div>
+            <div class="form-group col-md-12">
+                <?php if (isset($siswa) && $siswa->verifikasi_file == 2): ?>
+                <br>
+                <span class="text-danger">verifikasi file gagal, harap upload ulang</span>
+                <?php endif; ?>
+            </div>
+
 
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">
-                    Upload KIP:
-                    <?php if (isset($siswa) && $siswa->verifikasi_file == 2): ?>
-                    <br>
-                    <span class="text-danger">verifikasi file gagal, harap upload ulang</span>
-                    <?php endif; ?>
+                    File KIP:
+
                 </label><br>
 
                 <?php if (!empty($siswa->file_kip)): ?>
@@ -73,12 +77,71 @@
                 <?php endif; ?>
             </div>
 
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">
+                    File Penghasilan Orang Tua:
+
+                </label><br>
+
+                <?php if (!empty($siswa->file_penghasilan_orang_tua)): ?>
+                <a href="<?= base_url('public/uploads/' . $siswa->file_penghasilan_orang_tua); ?>" target="_blank"
+                    class="btn btn-info">
+                    Lihat File
+                </a>
+                <?php else: ?>
+                <p class="text-muted">Tidak ada file diupload</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">
+                    File Tanggungan Orang Tua:
+
+                </label><br>
+
+                <?php if (!empty($siswa->file_tanggungan_orang_tua)): ?>
+                <a href="<?= base_url('public/uploads/' . $siswa->file_tanggungan_orang_tua); ?>" target="_blank"
+                    class="btn btn-info">
+                    Lihat File
+                </a>
+                <?php else: ?>
+                <p class="text-muted">Tidak ada file diupload</p>
+                <?php endif; ?>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">
+                    File Kepemilikan Rumah:
+
+                </label><br>
+
+                <?php if (!empty($siswa->file_rumah)): ?>
+                <a href="<?= base_url('public/uploads/' . $siswa->file_rumah); ?>" target="_blank" class="btn btn-info">
+                    Lihat File
+                </a>
+                <?php else: ?>
+                <p class="text-muted">Tidak ada file diupload</p>
+                <?php endif; ?>
+            </div>
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">
+                    File Rapor:
+
+                </label><br>
+
+                <?php if (!empty($siswa->file_rapor)): ?>
+                <a href="<?= base_url('public/uploads/' . $siswa->file_rapor); ?>" target="_blank" class="btn btn-info">
+                    Lihat File
+                </a>
+                <?php else: ?>
+                <p class="text-muted">Tidak ada file diupload</p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="card-footer text-right">
             <?php if ($siswa) { ?>
             <?php if ($siswa->verifikasi_file != 1) { ?>
-            <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ?? '')); ?>" class="btn btn-warning">
+            <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ? $siswa->id : '')); ?>" class="btn btn-warning">
                 <i class="fa fa-edit"></i> Edit Data
             </a>
             <?php } ?>

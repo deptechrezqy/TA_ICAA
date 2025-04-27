@@ -31,13 +31,17 @@
                         <th>Kepemilikan Rumah</th>
                         <th>Nilai Rata-Rata Rapor</th>
                         <th>KIP</th>
+                        <th>FIle Penghasilan Orang Tua</th>
+                        <th>FIle Jumlah Tanggungan</th>
+                        <th>File Kepemilikan Rumah</th>
+                        <th>File Nilai Raport</th>
                         <th>Verifikasi KIP</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-					$no = 1;
-					foreach ($list as $data => $siswa) { ?>
+                    $no = 1;
+                    foreach ($list as $data => $siswa) { ?>
                     <tr align="center">
                         <td><?= $no ?></td>
                         <td><?php echo $siswa->nisn ?></td>
@@ -53,6 +57,40 @@
                             <p class="text-muted">Tidak ada file diupload</p>
                             <?php } ?>
                         </td>
+
+                        <td> <?php if (!empty($siswa->file_penghasilan_orang_tua)) { ?>
+                            <a href="<?= base_url('/public/uploads/' . $siswa->file_penghasilan_orang_tua); ?>"
+                                target="_blank" class="btn btn-info">Lihat
+                                File</a>
+                            <?php } else { ?>
+                            <p class="text-muted">Tidak ada file diupload</p>
+                            <?php } ?>
+                        </td>
+                        <td> <?php if (!empty($siswa->file_tanggungan_orang_tua)) { ?>
+                            <a href="<?= base_url('/public/uploads/' . $siswa->file_tanggungan_orang_tua); ?>"
+                                target="_blank" class="btn btn-info">Lihat
+                                File</a>
+                            <?php } else { ?>
+                            <p class="text-muted">Tidak ada file diupload</p>
+                            <?php } ?>
+                        </td>
+                        <td> <?php if (!empty($siswa->file_rumah)) { ?>
+                            <a href="<?= base_url('/public/uploads/' . $siswa->file_rumah); ?>" target="_blank"
+                                class="btn btn-info">Lihat
+                                File</a>
+                            <?php } else { ?>
+                            <p class="text-muted">Tidak ada file diupload</p>
+                            <?php } ?>
+                        </td>
+                        <td> <?php if (!empty($siswa->file_rapor)) { ?>
+                            <a href="<?= base_url('/public/uploads/' . $siswa->file_rapor); ?>" target="_blank"
+                                class="btn btn-info">Lihat
+                                File</a>
+                            <?php } else { ?>
+                            <p class="text-muted">Tidak ada file diupload</p>
+                            <?php } ?>
+                        </td>
+
                         <td>
                             <?php if ($siswa->verifikasi_file == 1): ?>
                             <span class="badge badge-success">Terverifikasi</span>
@@ -73,9 +111,9 @@
 
                     </tr>
                     <?php
-						$no++;
-					}
-					?>
+                        $no++;
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
