@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 18 Apr 2025 pada 16.48
+-- Waktu pembuatan: 28 Apr 2025 pada 12.45
 -- Versi server: 8.0.30
 -- Versi PHP: 8.1.10
 
@@ -29,8 +29,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `alternatif` (
   `id_alternatif` int NOT NULL,
-  `nama` varchar(100) NOT NULL
+  `nama` varchar(100) NOT NULL,
+  `siswa_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `alternatif`
+--
+
+INSERT INTO `alternatif` (`id_alternatif`, `nama`, `siswa_id`) VALUES
+(75, 'riski', 3);
 
 -- --------------------------------------------------------
 
@@ -43,6 +51,13 @@ CREATE TABLE `hasil` (
   `id_alternatif` int NOT NULL,
   `nilai` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `hasil`
+--
+
+INSERT INTO `hasil` (`id_hasil`, `id_alternatif`, `nilai`) VALUES
+(1, 75, 0.2);
 
 -- --------------------------------------------------------
 
@@ -81,6 +96,17 @@ CREATE TABLE `penilaian` (
   `id_sub_kriteria` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data untuk tabel `penilaian`
+--
+
+INSERT INTO `penilaian` (`id_penilaian`, `id_alternatif`, `id_kriteria`, `id_sub_kriteria`) VALUES
+(379, 75, 43, 171),
+(380, 75, 44, 188),
+(381, 75, 45, 175),
+(382, 75, 46, 178),
+(383, 75, 47, 185);
+
 -- --------------------------------------------------------
 
 --
@@ -96,9 +122,20 @@ CREATE TABLE `siswa` (
   `kepemilikan_rumah` enum('Sewa/Kontrak','Milik Bersama','Hak Milik','') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `nilai_rapor` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
   `file_kip` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `file_penghasilan_orang_tua` text COLLATE utf8mb4_general_ci NOT NULL,
+  `file_tanggungan_orang_tua` text COLLATE utf8mb4_general_ci NOT NULL,
+  `file_rumah` text COLLATE utf8mb4_general_ci NOT NULL,
+  `file_rapor` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int NOT NULL,
   `verifikasi_file` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `siswa`
+--
+
+INSERT INTO `siswa` (`id`, `nisn`, `nama`, `penghasilan_ortu`, `jumlah_tanggungan`, `kepemilikan_rumah`, `nilai_rapor`, `file_kip`, `file_penghasilan_orang_tua`, `file_tanggungan_orang_tua`, `file_rumah`, `file_rapor`, `user_id`, `verifikasi_file`) VALUES
+(3, 123456, 'riski', '> Rp. 5.000.000', 1, 'Sewa/Kontrak', '86', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik1.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik2.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik3.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik4.pdf', 7, 1);
 
 -- --------------------------------------------------------
 
@@ -245,13 +282,13 @@ ALTER TABLE `user_level`
 -- AUTO_INCREMENT untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
-  MODIFY `id_alternatif` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id_alternatif` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT untuk tabel `hasil`
 --
 ALTER TABLE `hasil`
-  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `kriteria`
@@ -263,13 +300,13 @@ ALTER TABLE `kriteria`
 -- AUTO_INCREMENT untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
-  MODIFY `id_penilaian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=379;
+  MODIFY `id_penilaian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=384;
 
 --
 -- AUTO_INCREMENT untuk tabel `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `sub_kriteria`
