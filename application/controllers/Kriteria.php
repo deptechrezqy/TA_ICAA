@@ -14,11 +14,11 @@ class Kriteria extends CI_Controller
 
         if ($this->session->userdata('id_user_level') != "1") {
             ?>
-<script type="text/javascript">
-alert('Anda tidak berhak mengakses halaman ini!');
-window.location = '<?php echo base_url("Login/home"); ?>'
-</script>
-<?php
+            <script type="text/javascript">
+                alert('Anda tidak berhak mengakses halaman ini!');
+                window.location = '<?php echo base_url("Login/home"); ?>'
+            </script>
+            <?php
         }
     }
 
@@ -53,10 +53,12 @@ window.location = '<?php echo base_url("Login/home"); ?>'
     //menambahkan data ke database
     public function store()
     {
+        $bobot = str_replace(',', '.', $_POST['bobot']);
         $data = [
             'keterangan' => $this->input->post('keterangan'),
             'kode_kriteria' => $this->input->post('kode_kriteria'),
-            'jenis' => $this->input->post('jenis')
+            'jenis' => $this->input->post('jenis'),
+            'bobot' => $bobot
         ];
 
 
@@ -87,10 +89,13 @@ window.location = '<?php echo base_url("Login/home"); ?>'
     {
         // TODO: implementasi update data berdasarkan $id_kriteria
         $id_kriteria = $this->input->post('id_kriteria');
+        $bobot = str_replace(',', '.', $_POST['bobot']);
+
         $data = array(
             'keterangan' => $this->input->post('keterangan'),
             'kode_kriteria' => $this->input->post('kode_kriteria'),
-            'jenis' => $this->input->post('jenis')
+            'jenis' => $this->input->post('jenis'),
+            'bobot' => $bobot,
         );
 
         $this->Kriteria_model->update($id_kriteria, $data);

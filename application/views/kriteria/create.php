@@ -39,6 +39,11 @@
                     <option value="Cost">Cost</option>
                 </select>
             </div>
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">Bobot</label>
+                <input autocomplete="off" type="number" step="any" name="bobot" required class="form-control" />
+            </div>
+
         </div>
     </div>
     <div class="card-footer text-right">

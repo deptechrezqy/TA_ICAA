@@ -1,6 +1,6 @@
 <?php
 if ($this->session->status !== ('Logged')) {
-  redirect('login');
+    redirect('login');
 }
 ?>
 
@@ -57,8 +57,8 @@ if ($this->session->status !== ('Logged')) {
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item <?php if ($page == 'Dashboard') {
-        echo 'active';
-      } ?>">
+                echo 'active';
+            } ?>">
                 <a class="nav-link" href="<?= base_url('Login/home'); ?>">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Dashboard</span></a>
@@ -74,16 +74,16 @@ if ($this->session->status !== ('Logged')) {
 
             <?php if ($this->session->userdata('id_user_level') == '1'): ?>
             <li class="nav-item <?php if ($page == 'Kriteria') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Kriteria'); ?>">
                     <i class="fas fa-fw fa-cube"></i>
                     <span>Data Kriteria</span></a>
             </li>
 
             <li class="nav-item <?php if ($page == 'Sub Kriteria') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Sub_kriteria'); ?>">
                     <i class="fas fa-fw fa-cubes"></i>
                     <span>Data Sub Kriteria</span></a>
@@ -91,51 +91,58 @@ if ($this->session->status !== ('Logged')) {
 
 
             <li class="nav-item <?php if ($page == 'Penilaian') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Penilaian'); ?>">
                     <i class="fas fa-fw fa-edit"></i>
                     <span>Data Penilaian</span></a>
             </li>
 
             <li class="nav-item <?php if ($page == 'Perhitungan') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Perhitungan'); ?>">
                     <i class="fas fa-fw fa-calculator"></i>
                     <span>Data Perhitungan</span></a>
             </li>
 
             <li class="nav-item <?php if ($page == 'Hasil') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Perhitungan/hasil'); ?>">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Data Hasil Akhir</span></a>
             </li>
 
             <li class="nav-item <?php if ($page == 'Siswa') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
 
                 <a class="nav-link" href="<?= base_url('Siswa'); ?>">
                     <i class="fas fa-fw fa-users-cog"></i>
                     <span>Data Siswa</span></a>
             </li>
+            <li class="nav-item <?php if ($page == 'Recap') {
+                    echo 'active';
+                } ?>">
+                <a class="nav-link" href="<?= base_url('recap/index'); ?>">
+                    <i class="fas fa-fw fa-users-cog"></i>
+                    <span>Data Recap Siswa</span></a>
+            </li>
             <?php endif; ?>
 
             <?php if ($this->session->userdata('id_user_level') == '2'): ?>
             <li class="nav-item <?php if ($page == 'Hasil') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Perhitungan/hasil'); ?>">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Data Hasil Akhir</span></a>
             </li>
 
             <li class="nav-item <?php if ($page == 'Isi_data') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('Isi_data'); ?>">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Data Siswa</span></a>
@@ -154,8 +161,8 @@ if ($this->session->status !== ('Logged')) {
 
             <?php if ($this->session->userdata('id_user_level') == '1'): ?>
             <li class="nav-item <?php if ($page == 'User') {
-          echo 'active';
-        } ?>">
+                    echo 'active';
+                } ?>">
                 <a class="nav-link" href="<?= base_url('User'); ?>">
                     <i class="fas fa-fw fa-users-cog"></i>
                     <span>Data User</span></a>
@@ -163,8 +170,8 @@ if ($this->session->status !== ('Logged')) {
             <?php endif; ?>
 
             <li class="nav-item <?php if ($page == 'Profile') {
-        echo 'active';
-      } ?>">
+                echo 'active';
+            } ?>">
                 <a class="nav-link" href="<?= base_url('Profile'); ?>">
                     <i class="fas fa-fw fa-user"></i>
                     <span>Data Profile</span></a>

@@ -12,15 +12,15 @@
     <?php echo form_open_multipart('Isi_data/store'); ?>
     <div class="card-body">
         <?php if (validation_errors()) { ?>
-        <div class="alert alert-danger">
-            <?php echo validation_errors(); ?>
-        </div>
+            <div class="alert alert-danger">
+                <?php echo validation_errors(); ?>
+            </div>
         <?php } ?>
 
         <?php if ($this->session->flashdata('error')) { ?>
-        <div class="alert alert-danger">
-            <?php echo $this->session->flashdata('error'); ?>
-        </div>
+            <div class="alert alert-danger">
+                <?php echo $this->session->flashdata('error'); ?>
+            </div>
         <?php } ?>
         <div class="row">
             <div class="form-group col-md-4">
@@ -38,7 +38,7 @@
                 <select name="penghasilan_ortu" class="form-control" required>
                     <option value="">-- Pilih Besar Penghasilan --</option>
                     <?php foreach ($penghasilan_ortu as $p) { ?>
-                    <option value="<?php echo $p; ?>"><?php echo $p; ?></option>
+                        <option value="<?php echo $p; ?>"><?php echo $p; ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -53,7 +53,7 @@
                 <select name="kepemilikan_rumah" class="form-control" required>
                     <option value="">-- Pilih Status Kepemilikan --</option>
                     <?php foreach ($kepemilikan_rumah as $kr) { ?>
-                    <option value="<?php echo $kr; ?>"><?php echo $kr; ?></option>
+                        <option value="<?php echo $kr; ?>"><?php echo $kr; ?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -64,7 +64,7 @@
             </div>
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Upload KIP:</label>
-                <input type="file" name="file_kip" class="form-control" required>
+                <input type="file" name="file_kip" class="form-control">
             </div>
             <div class="form-group col-md-4">
                 <label class="font-weight-bold">Upload Penghasilan Orang Tua:</label>

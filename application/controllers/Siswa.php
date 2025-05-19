@@ -63,56 +63,61 @@ window.location = '<?php echo base_url("Login/home"); ?>'
 
         foreach ($kriteria_map as $kode => $deskripsi) {
             $kriteria = $this->db->get_where('kriteria', ['kode_kriteria' => $kode])->row();
-            if (!$kriteria)
+            if (!$kriteria) {
+                log_message('error', "Kriteria dengan kode $kode tidak ditemukan.");
                 continue;
+            }
 
-            if ($kode == 'C5') {
-                // Untuk nilai rapor (angka dengan rentang dalam deskripsi)
-                $nilai = (int) $deskripsi;
-                $subkriteria_list = $this->db->get_where('sub_kriteria', [
-                    'id_kriteria' => $kriteria->id_kriteria
-                ])->result();
+            $subkriteria = null;
+            $subkriteria_list = $this->db->get_where('sub_kriteria', [
+                'id_kriteria' => $kriteria->id_kriteria
+            ])->result();
 
-                $subkriteria = null;
-                foreach ($subkriteria_list as $sk) {
-                    if (preg_match('/(\d+)\s*-\s*(\d+)/', $sk->deskripsi, $matches)) {
-                        $min = (int) $matches[1];
-                        $max = (int) $matches[2];
-                        if ($nilai >= $min && $nilai <= $max) {
+            switch ($kode) {
+                case 'C5':
+                    // Nilai rapor dalam bentuk angka, cocokkan dengan rentang di deskripsi
+                    $nilai = (int) $deskripsi;
+                    foreach ($subkriteria_list as $sk) {
+                        if (preg_match('/(\d+)\s*-\s*(\d+)/', $sk->deskripsi, $matches)) {
+                            $min = (int) $matches[1];
+                            $max = (int) $matches[2];
+                            if ($nilai >= $min && $nilai <= $max) {
+                                $subkriteria = $sk;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
+                case 'C3':
+                    // Jumlah tanggungan (angka atau >N)
+                    $jumlah = (int) $deskripsi;
+                    foreach ($subkriteria_list as $sk) {
+                        if (preg_match('/^>\s*(\d+)/', $sk->deskripsi, $matches)) {
+                            if ($jumlah > (int) $matches[1]) {
+                                $subkriteria = $sk;
+                                break;
+                            }
+                        } elseif (preg_match('/(\d+)\s*-\s*(\d+)/', $sk->deskripsi, $matches)) {
+                            $min = (int) $matches[1];
+                            $max = (int) $matches[2];
+                            if ($jumlah >= $min && $jumlah <= $max) {
+                                $subkriteria = $sk;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    // Kriteria lainnya: cocokan berdasarkan deskripsi string langsung
+                    foreach ($subkriteria_list as $sk) {
+                        if (trim(strtolower($sk->deskripsi)) === trim(strtolower($deskripsi))) {
                             $subkriteria = $sk;
                             break;
                         }
                     }
-                }
-            } elseif ($kode == 'C3') {
-                // Untuk jumlah tanggungan
-                $jumlah = (int) $deskripsi;
-                $subkriteria_list = $this->db->get_where('sub_kriteria', [
-                    'id_kriteria' => $kriteria->id_kriteria
-                ])->result();
-
-                $subkriteria = null;
-                foreach ($subkriteria_list as $sk) {
-                    if (preg_match('/^>\s*(\d+)/', $sk->deskripsi, $matches)) {
-                        if ($jumlah > (int) $matches[1]) {
-                            $subkriteria = $sk;
-                            break;
-                        }
-                    } elseif (preg_match('/(\d+)\s*-\s*(\d+)/', $sk->deskripsi, $matches)) {
-                        $min = (int) $matches[1];
-                        $max = (int) $matches[2];
-                        if ($jumlah >= $min && $jumlah <= $max) {
-                            $subkriteria = $sk;
-                            break;
-                        }
-                    }
-                }
-            } else {
-                // Untuk kriteria lain (pakai deskripsi langsung)
-                $subkriteria = $this->db->get_where('sub_kriteria', [
-                    'id_kriteria' => $kriteria->id_kriteria,
-                    'deskripsi' => $deskripsi
-                ])->row();
+                    break;
             }
 
             if ($subkriteria) {
@@ -122,7 +127,7 @@ window.location = '<?php echo base_url("Login/home"); ?>'
                     $subkriteria->id_sub_kriteria
                 );
             } else {
-                log_message('error', "Subkriteria tidak ditemukan untuk kriteria $kode dengan deskripsi '$deskripsi'");
+                log_message('error', "Subkriteria tidak ditemukan untuk kriteria '$kode' dengan deskripsi '$deskripsi'");
             }
         }
 

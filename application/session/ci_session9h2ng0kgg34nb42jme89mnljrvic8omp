@@ -1,7 +1,0 @@
-__ci_last_regenerate|i:1745766598;login_message|s:29:"Username atau Password salah.";__ci_vars|a:3:{s:13:"login_message";s:3:"old";s:7:"message";s:3:"old";s:5:"error";s:3:"old";}id_user|s:1:"7";username|s:4:"user";id_user_level|s:1:"2";status|s:6:"Logged";message|s:356:"
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Sukses!</strong> Data berhasil disimpan.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>";error|s:21:"NISN sudah terdaftar.";
