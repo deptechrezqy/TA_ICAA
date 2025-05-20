@@ -2,17 +2,32 @@
 $this->load->view('layouts/header_admin');
 // Matrix Keputusan (X)
 $matriks_x = array();
+$matriks_x_moora = array();
+$total_matriks_x_moora = array();
+
 foreach ($kriterias as $kriteria) {
+    $id_kriteria = $kriteria->id_kriteria;
+    $total_matriks_x_moora[$id_kriteria] = 0; // Inisialisasi agar tidak undefined
+
     foreach ($alternatifs as $alternatif) {
         $id_alternatif = $alternatif->id_alternatif;
-        $id_kriteria = $kriteria->id_kriteria;
 
+        // Ambil nilai dari model
         $data_pencocokan = $this->Perhitungan_model->data_nilai($id_alternatif, $id_kriteria);
         $nilai = isset($data_pencocokan['nilai']) ? $data_pencocokan['nilai'] : 0;
 
+        // Isi matriks
         $matriks_x[$id_kriteria][$id_alternatif] = $nilai;
+
+        // Hitung kuadrat nilai untuk MOORA
+        $kuadrat = $nilai * $nilai;
+        $matriks_x_moora[$id_kriteria][$id_alternatif] = $kuadrat;
+
+        // Tambahkan ke total
+        $total_matriks_x_moora[$id_kriteria] += $kuadrat;
     }
 }
+
 
 // Normalisasi Matriks (Kij)
 // Matriks Ternormalisasi (Kij)
@@ -42,11 +57,12 @@ foreach ($kriterias as $kriteria):
             $nilai_r = 0; // fallback
         }
 
-        $matriks_k[$id_kriteria][$id_alternatif] = round($nilai_r, 6); // pembulatan opsional
+        $matriks_k[$id_kriteria][$id_alternatif] = round($nilai_r, 6);
+
         $t_r += $nilai_r;
     endforeach;
 
-    $total_k[$id_kriteria] = $t_r;
+    $total_k[$id_kriteria] = round($t_r, 6);
 endforeach;
 
 
@@ -61,7 +77,7 @@ foreach ($kriterias as $kriteria):
         $t_r = $total_k[$id_kriteria];
 
         $nilai_a = $nilai_r / $t_r;
-        $matriks_a[$id_kriteria][$id_alternatif] = $nilai_a;
+        $matriks_a[$id_kriteria][$id_alternatif] = round($nilai_a, 6);
     endforeach;
 endforeach;
 
@@ -77,9 +93,9 @@ foreach ($kriterias as $kriteria) {
         $dik = $matriks_a[$id_kriteria][$id_alternatif];
 
         // Entropy log calculation: e_ik = dik * ln(dik)
-        $ln = ($dik > 0) ? round(log($dik), 5) : 0;
+        $ln = ($dik > 0) ? log($dik) : 0;
 
-        $ln_ratio[$id_kriteria][$id_alternatif] = $ln;
+        $ln_ratio[$id_kriteria][$id_alternatif] = round($ln, 5);
     }
 }
 
@@ -99,15 +115,15 @@ foreach ($kriterias as $kriteria):
         // Menghitung nilai e, pastikan tidak menghasilkan NaN
         $e = !is_nan($nilai_a * log($nilai_a)) ? $nilai_a * log($nilai_a) : 0;
 
-        $nilai_e[$id_kriteria][$id_alternatif] = $e;
+        $nilai_e[$id_kriteria][$id_alternatif] = round($e, 5);
         $t_e += $e;
     endforeach;
 
-    $total_e[$id_kriteria] = $t_e;
+    $total_e[$id_kriteria] = round($t_e, 5);
 
     // Menghitung entropy dengan menghindari pembagian dengan nol
     if (count($alternatifs) > 1) {
-        $entropy[$id_kriteria] = round(-0.434294 * $t_e, 5);
+        $entropy[$id_kriteria] = round(-0.434294 * round($t_e, 5), 5);
     } else {
         // Jika hanya ada satu alternatif, set entropy ke 0 (atau nilai lain yang sesuai)
         $entropy[$id_kriteria] = 0;
@@ -130,18 +146,23 @@ foreach ($kriterias as $kriteria):
 endforeach;
 
 $bobot_e = array();
+$bobot_k = array();
+$total_hasil_kriteria = 0;
 foreach ($kriterias as $kriteria):
     $id_kriteria = $kriteria->id_kriteria;
-    $bobot_e[$id_kriteria] = $nilai_edk * round($nilai_d[$id_kriteria], 5);
+    $bobot_e[$id_kriteria] = round($nilai_edk * $nilai_d[$id_kriteria], 6);
+    $bobot_k[$id_kriteria] = $bobot_e[$id_kriteria] * $kriteria->bobot;
+    $total_hasil_kriteria += $bobot_k[$id_kriteria];
 endforeach;
+
 
 //Normalisasi nilai dispersi Wj
 $nilai_w = array();
 foreach ($kriterias as $kriteria):
     $id_kriteria = $kriteria->id_kriteria;
-    $d = $nilai_d[$id_kriteria];
-    $w = $d / $total_d;
-    $nilai_w[$id_kriteria] = $w;
+    $bobot_akhir = ($bobot_e[$id_kriteria] * $kriteria->bobot) / $total_hasil_kriteria;
+
+    $nilai_w[$id_kriteria] = round($bobot_akhir, 6);
 endforeach;
 
 
@@ -158,7 +179,7 @@ foreach ($matriks_x as $id_kriteria => $penilaians):
     $akar_kuadrat = sqrt($jumlah_kuadrat);
 
     foreach ($penilaians as $id_alternatif => $penilaian):
-        $matriks_r[$id_kriteria][$id_alternatif] = $penilaian / $akar_kuadrat;
+        $matriks_r[$id_kriteria][$id_alternatif] = round($penilaian / $akar_kuadrat, 6);
     endforeach;
 
 endforeach;
@@ -173,7 +194,7 @@ foreach ($alternatifs as $alternatif):
         $bobot = $nilai_w[$id_kriteria];
 
         $nilai_r = $matriks_r[$id_kriteria][$id_alternatif];
-        $matriks_rb[$id_kriteria][$id_alternatif] = $bobot * $nilai_r;
+        $matriks_rb[$id_kriteria][$id_alternatif] = round($bobot * $nilai_r, 6);
 
     endforeach;
 endforeach;
@@ -362,7 +383,7 @@ endforeach;
                                         $id_alternatif = $alternatif->id_alternatif;
                                         $id_kriteria = $kriteria->id_kriteria;
                                         echo '<td>';
-                                        echo round($matriks_a[$id_kriteria][$id_alternatif], 6);
+                                        echo $matriks_a[$id_kriteria][$id_alternatif];
                                         echo '</td>';
                                     endforeach;
                                     ?>
@@ -452,7 +473,7 @@ endforeach;
                                         $id_alternatif = $alternatif->id_alternatif;
                                         $id_kriteria = $kriteria->id_kriteria;
                                         echo '<td>';
-                                        echo round($nilai_e[$id_kriteria][$id_alternatif], 5);
+                                        echo $nilai_e[$id_kriteria][$id_alternatif];
                                         echo '</td>';
                                     endforeach;
                                     ?>
@@ -467,7 +488,7 @@ endforeach;
                                 foreach ($kriterias as $kriteria):
                                     $id_kriteria = $kriteria->id_kriteria;
                                     echo '<td class="bg-light">';
-                                    echo round($total_e[$id_kriteria], 5);
+                                    echo $total_e[$id_kriteria];
                                     echo '</td>';
                                 endforeach
                                 ?>
@@ -478,7 +499,7 @@ endforeach;
                                 foreach ($kriterias as $kriteria):
                                     $id_kriteria = $kriteria->id_kriteria;
                                     echo '<td class="bg-light">';
-                                    echo round($entropy[$id_kriteria], 5);
+                                    echo $entropy[$id_kriteria];
                                     echo '</td>';
                                 endforeach
                                 ?>
@@ -516,7 +537,7 @@ endforeach;
                                 <?php foreach ($kriterias as $kriteria):
                                     $id_kriteria = $kriteria->id_kriteria;
                                     ?>
-                                    <td><?php echo round($nilai_d[$id_kriteria], 5); ?></td>
+                                    <td><?php echo $nilai_d[$id_kriteria]; ?></td>
                                 <?php endforeach ?>
 
                             </tr>
@@ -525,7 +546,7 @@ endforeach;
                                 <?php foreach ($kriterias as $kriteria):
                                     $id_kriteria = $kriteria->id_kriteria;
                                     ?>
-                                    <td class="bg-light"><?php echo round($bobot_e[$id_kriteria], 5); ?></td>
+                                    <td class="bg-light"><?php echo $bobot_e[$id_kriteria]; ?></td>
                                 <?php endforeach ?>
 
                             </tr>
@@ -558,18 +579,16 @@ endforeach;
                         <tbody>
                             <?php
                             $no = 1;
-                            $total_hasil_kriteria = 0;
                             foreach ($kriterias as $kriteria):
                                 $id_kriteria = $kriteria->id_kriteria;
-                                $hasil = round($bobot_e[$id_kriteria], 5) * $kriteria->bobot;
-                                $total_hasil_kriteria += $hasil;
+
                                 ?>
                                 <tr align="center">
                                     <td><?= $no; ?></td>
                                     <td><?php echo $kriteria->kode_kriteria ?></td>
-                                    <td><?php echo round($bobot_e[$id_kriteria], 5) ?></td>
+                                    <td><?php echo $bobot_e[$id_kriteria] ?></td>
                                     <td><?php echo $kriteria->bobot ?></td>
-                                    <td><?= $hasil ?></td>
+                                    <td><?= $bobot_k[$id_kriteria] ?></td>
                                 </tr>
                                 <?php
                                 $no++;
@@ -611,13 +630,11 @@ endforeach;
 
                             foreach ($kriterias as $kriteria):
                                 $id_kriteria = $kriteria->id_kriteria;
-                                $bobot_akhir = (round($bobot_e[$id_kriteria], 5) * $kriteria->bobot) / $total_hasil_kriteria;
-
                                 ?>
                                 <tr align="center">
                                     <td><?= $no; ?></td>
                                     <td><?php echo $kriteria->kode_kriteria ?></td>
-                                    <td><?php echo round($bobot_akhir, 5) ?></td>
+                                    <td><?php echo $nilai_w[$id_kriteria] ?></td>
 
                                 </tr>
                                 <?php
@@ -663,7 +680,7 @@ endforeach;
                                         $id_alternatif = $alternatif->id_alternatif;
                                         $id_kriteria = $kriteria->id_kriteria;
                                         echo '<td>';
-                                        echo $matriks_x[$id_kriteria][$id_alternatif];
+                                        echo $matriks_x_moora[$id_kriteria][$id_alternatif];
                                         echo '</td>';
                                     endforeach
                                     ?>
@@ -673,6 +690,21 @@ endforeach;
                             endforeach
                             ?>
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="bg-light" style="text-align: right
+                                ;">Total</td>
+                                <?php
+                                foreach ($kriterias as $kriteria):
+
+                                    $id_kriteria = $kriteria->id_kriteria;
+                                    echo '<td>';
+                                    echo $total_matriks_x_moora[$id_kriteria];
+                                    echo '</td>';
+                                endforeach
+                                ?>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
