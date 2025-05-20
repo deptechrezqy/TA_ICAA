@@ -161,7 +161,9 @@ window.location = '<?php echo base_url("Login/home"); ?>'
             'file_tanggungan_orang_tua' => $uploaded_files['file_tanggungan_orang_tua'],
             'file_rumah' => $uploaded_files['file_rumah'],
             'file_rapor' => $uploaded_files['file_rapor'],
-            'user_id' => $this->session->userdata('id_user')
+            'user_id' => $this->session->userdata('id_user'),
+            'created_at' => date('Y-m-d'),
+
         ];
 
         // Simpan data ke database

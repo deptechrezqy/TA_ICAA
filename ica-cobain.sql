@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 28 Apr 2025 pada 12.45
+-- Waktu pembuatan: 19 Bulan Mei 2025 pada 15.00
 -- Versi server: 8.0.30
 -- Versi PHP: 8.1.10
 
@@ -30,15 +30,25 @@ SET time_zone = "+00:00";
 CREATE TABLE `alternatif` (
   `id_alternatif` int NOT NULL,
   `nama` varchar(100) NOT NULL,
-  `siswa_id` int NOT NULL
+  `siswa_id` int NOT NULL,
+  `status` int NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data untuk tabel `alternatif`
 --
 
-INSERT INTO `alternatif` (`id_alternatif`, `nama`, `siswa_id`) VALUES
-(75, 'riski', 3);
+INSERT INTO `alternatif` (`id_alternatif`, `nama`, `siswa_id`, `status`) VALUES
+(77, 'a1', 5, 1),
+(78, 'a2', 5, 1),
+(79, 'a3', 5, 1),
+(80, 'a4', 5, 1),
+(81, 'a5', 5, 1),
+(82, 'a6', 5, 1),
+(83, 'a7', 5, 1),
+(84, 'a8', 5, 1),
+(85, 'a9', 5, 1),
+(86, 'a10', 5, 1);
 
 -- --------------------------------------------------------
 
@@ -57,7 +67,16 @@ CREATE TABLE `hasil` (
 --
 
 INSERT INTO `hasil` (`id_hasil`, `id_alternatif`, `nilai`) VALUES
-(1, 75, 0.2);
+(1, 77, 0.0419711),
+(2, 78, -0.148907),
+(3, 79, 0.0419711),
+(4, 80, -0.0268717),
+(5, 81, -0.0174029),
+(6, 82, -0.0156552),
+(7, 83, -0.0692282),
+(8, 84, -0.148907),
+(9, 85, -0.0814261),
+(10, 86, -0.122801);
 
 -- --------------------------------------------------------
 
@@ -69,19 +88,20 @@ CREATE TABLE `kriteria` (
   `id_kriteria` int NOT NULL,
   `keterangan` varchar(100) NOT NULL,
   `kode_kriteria` varchar(100) NOT NULL,
-  `jenis` varchar(100) NOT NULL
+  `jenis` varchar(100) NOT NULL,
+  `bobot` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data untuk tabel `kriteria`
 --
 
-INSERT INTO `kriteria` (`id_kriteria`, `keterangan`, `kode_kriteria`, `jenis`) VALUES
-(43, 'Kepemilikan Kartu', 'C1', 'Benefit'),
-(44, 'Penghasilan Orang Tua', 'C2', 'Cost'),
-(45, 'Jumlah Tanggungan Orang Tua', 'C3', 'Cost'),
-(46, 'Kepemilikan Rumah', 'C4', 'Benefit'),
-(47, 'Nilai Rapor', 'C5', 'Benefit');
+INSERT INTO `kriteria` (`id_kriteria`, `keterangan`, `kode_kriteria`, `jenis`, `bobot`) VALUES
+(43, 'Kepemilikan Kartu', 'C1', 'Benefit', 0.3),
+(44, 'Penghasilan Orang Tua', 'C2', 'Cost', 0.25),
+(45, 'Jumlah Tanggungan Orang Tua', 'C3', 'Benefit', 0.2),
+(46, 'Kepemilikan Rumah', 'C4', 'Cost', 0.15),
+(47, 'Nilai Rapor', 'C5', 'Benefit', 0.1);
 
 -- --------------------------------------------------------
 
@@ -101,11 +121,56 @@ CREATE TABLE `penilaian` (
 --
 
 INSERT INTO `penilaian` (`id_penilaian`, `id_alternatif`, `id_kriteria`, `id_sub_kriteria`) VALUES
-(379, 75, 43, 171),
-(380, 75, 44, 188),
-(381, 75, 45, 175),
-(382, 75, 46, 178),
-(383, 75, 47, 185);
+(388, 77, 43, 170),
+(389, 77, 44, 173),
+(390, 77, 45, 176),
+(391, 77, 46, 178),
+(392, 77, 47, 185),
+(393, 78, 43, 170),
+(394, 78, 44, 172),
+(395, 78, 45, 175),
+(396, 78, 46, 181),
+(397, 78, 47, 185),
+(398, 79, 43, 170),
+(399, 79, 44, 173),
+(400, 79, 45, 176),
+(401, 79, 46, 178),
+(402, 79, 47, 185),
+(403, 80, 43, 170),
+(404, 80, 44, 174),
+(405, 80, 45, 175),
+(406, 80, 46, 189),
+(407, 80, 47, 187),
+(408, 81, 43, 170),
+(409, 81, 44, 172),
+(410, 81, 45, 177),
+(411, 81, 46, 181),
+(412, 81, 47, 187),
+(413, 82, 43, 170),
+(414, 82, 44, 173),
+(415, 82, 45, 175),
+(416, 82, 46, 178),
+(417, 82, 47, 185),
+(418, 83, 43, 170),
+(419, 83, 44, 173),
+(420, 83, 45, 175),
+(421, 83, 46, 189),
+(422, 83, 47, 185),
+(423, 84, 43, 170),
+(424, 84, 44, 172),
+(425, 84, 45, 175),
+(426, 84, 46, 181),
+(427, 84, 47, 185),
+(428, 85, 43, 170),
+(429, 85, 44, 173),
+(430, 85, 45, 176),
+(431, 85, 46, 181),
+(432, 85, 47, 184),
+(433, 86, 43, 170),
+(434, 86, 44, 173),
+(435, 86, 45, 175),
+(436, 86, 46, 181),
+(437, 86, 47, 185);
 
 -- --------------------------------------------------------
 
@@ -117,7 +182,7 @@ CREATE TABLE `siswa` (
   `id` int NOT NULL,
   `nisn` int NOT NULL,
   `nama` text COLLATE utf8mb4_general_ci NOT NULL,
-  `penghasilan_ortu` enum('> Rp. 5.000.000','Rp. 3.000.000 - Rp. 5.000.000','Rp. 1.000.000 - Rp. 3.000.000','< Rp. 500.000') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `penghasilan_ortu` enum('> Rp. 5.000.000','Rp. 3.000.000 - Rp. 5.000.000','Rp. 1.000.000 - Rp. 3.000.000','< Rp. 1.000.000') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `jumlah_tanggungan` int NOT NULL,
   `kepemilikan_rumah` enum('Sewa/Kontrak','Milik Bersama','Hak Milik','') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `nilai_rapor` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
@@ -127,15 +192,17 @@ CREATE TABLE `siswa` (
   `file_rumah` text COLLATE utf8mb4_general_ci NOT NULL,
   `file_rapor` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int NOT NULL,
-  `verifikasi_file` int NOT NULL DEFAULT '0'
+  `verifikasi_file` int NOT NULL DEFAULT '0',
+  `status` int NOT NULL DEFAULT '1',
+  `created_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `siswa`
 --
 
-INSERT INTO `siswa` (`id`, `nisn`, `nama`, `penghasilan_ortu`, `jumlah_tanggungan`, `kepemilikan_rumah`, `nilai_rapor`, `file_kip`, `file_penghasilan_orang_tua`, `file_tanggungan_orang_tua`, `file_rumah`, `file_rapor`, `user_id`, `verifikasi_file`) VALUES
-(3, 123456, 'riski', '> Rp. 5.000.000', 1, 'Sewa/Kontrak', '86', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik1.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik2.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik3.pdf', '1745763471_Peralatan_yang_digunakan_untuk_fiber_optik4.pdf', 7, 1);
+INSERT INTO `siswa` (`id`, `nisn`, `nama`, `penghasilan_ortu`, `jumlah_tanggungan`, `kepemilikan_rumah`, `nilai_rapor`, `file_kip`, `file_penghasilan_orang_tua`, `file_tanggungan_orang_tua`, `file_rumah`, `file_rapor`, `user_id`, `verifikasi_file`, `status`, `created_at`) VALUES
+(5, 12345678, 'dsad', '> Rp. 5.000.000', 1, 'Sewa/Kontrak', '88', '1747577576_Peralatan_yang_digunakan_untuk_fiber_optik.pdf', '1747577576_Peralatan_yang_digunakan_untuk_fiber_optik1.pdf', '1747577576_Peralatan_yang_digunakan_untuk_fiber_optik2.pdf', '1747577576_Peralatan_yang_digunakan_untuk_fiber_optik3.pdf', '1747577576_Peralatan_yang_digunakan_untuk_fiber_optik4.pdf', 9, 0, 1, '2025-05-18');
 
 -- --------------------------------------------------------
 
@@ -147,29 +214,30 @@ CREATE TABLE `sub_kriteria` (
   `id_sub_kriteria` int NOT NULL,
   `id_kriteria` int NOT NULL,
   `deskripsi` varchar(200) NOT NULL,
-  `nilai` float NOT NULL
+  `nilai` float NOT NULL,
+  `bobot` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data untuk tabel `sub_kriteria`
 --
 
-INSERT INTO `sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `deskripsi`, `nilai`) VALUES
-(170, 43, 'Tidak', 5),
-(171, 43, 'Ada', 3),
-(172, 44, 'Rp. 3.000.000 - Rp. 5.000.000', 10),
-(173, 44, 'Rp. 1.000.000 - Rp. 3.000.000', 8),
-(174, 44, '< Rp. 500.000', 5),
-(175, 45, '1 - 3 Anak ', 5),
-(176, 45, '4 - 6 Anak', 8),
-(177, 45, '> 6 Anak', 10),
-(178, 46, 'Sewa/Kontrak', 5),
-(181, 46, 'Hak Milik', 10),
-(184, 47, '75 - 79', 10),
-(185, 47, '80 - 89', 8),
-(187, 47, '90 - 99', 5),
-(188, 44, '> Rp. 5.000.000', 12),
-(189, 46, 'Milik Bersama', 8);
+INSERT INTO `sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `deskripsi`, `nilai`, `bobot`) VALUES
+(170, 43, 'Tidak', 2, 0),
+(171, 43, 'Ada', 1, 0),
+(172, 44, 'Rp. 3.000.000 - Rp. 5.000.000', 3, 0),
+(173, 44, 'Rp. 1.000.000 - Rp. 3.000.000', 2, 0),
+(174, 44, '< Rp. 1.000.000', 1, 0),
+(175, 45, '1 - 3 Anak ', 1, 0),
+(176, 45, '4 - 6 Anak', 2, 0),
+(177, 45, '> 6 Anak', 3, 0),
+(178, 46, 'Sewa/Kontrak', 1, 0),
+(181, 46, 'Hak Milik', 3, 0),
+(184, 47, '75 - 79', 1, 0),
+(185, 47, '80 - 89', 2, 0),
+(187, 47, '90 - 99', 3, 0),
+(188, 44, '> Rp. 5.000.000', 4, 0),
+(189, 46, 'Milik Bersama', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -192,7 +260,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `id_user_level`, `nama`, `email`, `username`, `password`, `verifikasi`) VALUES
-(1, 1, 'Admin', 'admin@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3', 1),
+(1, 1, 'Operator', 'Operator@gmail.com', 'operator', '21232f297a57a5a743894a0e4a801fc3', 1),
 (7, 2, 'User', 'user@gmail.com', 'user', 'ee11cbb19052e40b07aac0ca060c23ee', 1),
 (9, 2, 'icaaa', 'icaaa@gmail.com', 'icaa', '25d55ad283aa400af464c76d713c07ad', 1);
 
@@ -282,31 +350,31 @@ ALTER TABLE `user_level`
 -- AUTO_INCREMENT untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
-  MODIFY `id_alternatif` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id_alternatif` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT untuk tabel `hasil`
 --
 ALTER TABLE `hasil`
-  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT untuk tabel `kriteria`
 --
 ALTER TABLE `kriteria`
-  MODIFY `id_kriteria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id_kriteria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
-  MODIFY `id_penilaian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=384;
+  MODIFY `id_penilaian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=438;
 
 --
 -- AUTO_INCREMENT untuk tabel `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `sub_kriteria`

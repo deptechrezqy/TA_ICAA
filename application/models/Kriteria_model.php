@@ -29,7 +29,8 @@ class Kriteria_model extends CI_Model
         $ubah = array(
             'keterangan' => $data['keterangan'],
             'kode_kriteria' => $data['kode_kriteria'],
-            'jenis' => $data['jenis']
+            'jenis' => $data['jenis'],
+            'bobot' => $data['bobot']
         );
 
         $this->db->where('id_kriteria', $id_kriteria);

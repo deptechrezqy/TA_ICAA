@@ -16,7 +16,10 @@ class Alternatif_model extends CI_Model
         $this->db->insert('alternatif', $data);
         return $this->db->insert_id(); // ini akan mengembalikan id terakhir yang dimasukkan
     }
-
+    public function get_by_id($id)
+    {
+        return $this->db->get_where('alternatif', ['id_alternatif' => $id])->row();
+    }
 
     public function show($id_alternatif)
     {

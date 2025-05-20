@@ -22,10 +22,10 @@ class Penilaian_model extends CI_Model
         $query = $this->db->get('kriteria');
         return $query->result();
     }
-
     public function get_alternatif()
     {
-        $query = $this->db->query("SELECT * FROM alternatif");
+        $this->db->where('status', 1);
+        $query = $this->db->get('alternatif');
         return $query->result();
     }
 
@@ -44,5 +44,10 @@ class Penilaian_model extends CI_Model
         $query = $this->db->query("SELECT * FROM sub_kriteria WHERE id_kriteria='$id_kriteria' ORDER BY nilai DESC;");
         return $query->result_array();
     }
-}
 
+    public function hapus($id, $data)
+    {
+        $this->db->where('id_alternatif', $id);
+        return $this->db->update('alternatif', $data);
+    }
+}

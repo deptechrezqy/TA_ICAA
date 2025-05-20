@@ -34,14 +34,21 @@
                 <label class="font-weight-bold">Jenis Kriteria</label>
                 <select name="jenis" class="form-control" required>
                     <option value="Benefit" <?php if ($kriteria->jenis == "Benefit") {
-						echo 'selected';
-					} ?>>Benefit
+                        echo 'selected';
+                    } ?>>Benefit
                     </option>
                     <option value="Cost" <?php if ($kriteria->jenis == "Cost") {
-						echo 'selected';
-					} ?>>Cost</option>
+                        echo 'selected';
+                    } ?>>Cost</option>
                 </select>
             </div>
+            <div class="form-group col-md-4">
+                <label class="font-weight-bold">Bobot</label>
+                <input type="text" inputmode="decimal" name="bobot" value="<?php echo $kriteria->bobot ?>" required
+                    class="form-control" />
+
+            </div>
+
         </div>
     </div>
     <div class="card-footer text-right">

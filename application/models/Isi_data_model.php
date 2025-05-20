@@ -7,10 +7,20 @@ class Isi_data_model extends CI_Model
 
     public function tampil()
     {
+        $this->db->where('status', 1);
+        $this->db->order_by('verifikasi_file', 'ASC');
         $query = $this->db->get('siswa');
         return $query->result();
-    }
 
+    }
+    public function recap_all()
+    {
+        $this->db->where('status', 0);
+        $this->db->order_by('created_at', 'DESC');
+        $query = $this->db->get('siswa');
+        return $query->result();
+
+    }
     public function get_siswa_by_user($user_id)
     {
         return $this->db->get_where('siswa', ['user_id' => $user_id])->row();
@@ -34,7 +44,11 @@ class Isi_data_model extends CI_Model
         $this->db->where('id', $id);
         $this->db->delete('siswa');
     }
-
+    public function recap($id, $data)
+    {
+        $this->db->where('id', $id);
+        return $this->db->update('siswa', $data);
+    }
     // Tambahkan fungsi ini untuk mengambil nilai ENUM penghasilan_orang_tua
     public function get_enum_penghasilan()
     {
