@@ -27,6 +27,7 @@
                         <th>Tanggungan Orang Tua</th>
                         <th>Kepemilikan Rumah</th>
                         <th>Nilai Rata-Rata Rapor</th>
+                        <th>Nilai</th>
                         <th>Tanggal</th>
 
                     </tr>
@@ -34,23 +35,25 @@
                 <tbody>
                     <?php
                     $no = 1;
+                    $ranking = 1;
+
+
                     foreach ($list as $siswa):
 
                         ?>
                     <tr align="center">
-                        <td><?= $no ?></td>
-                        <td><?php echo $siswa->nisn ?></td>
-                        <td align="left"><?= $siswa->nama ?></td>
-                        <td><?php echo $siswa->penghasilan_ortu ?></td>
-                        <td><?php echo $siswa->jumlah_tanggungan ?></td>
-                        <td><?php echo $siswa->kepemilikan_rumah ?></td>
-                        <td><?php echo $siswa->nilai_rapor ?></td>
-                        <td><?php echo date('d-M-Y', strtotime($siswa->created_at)) ?></td>
+                        <td><?= $no++; ?></td>
+                        <td><?= htmlspecialchars($siswa->nisn) ?></td>
+                        <td align="left"><?= htmlspecialchars($siswa->nama) ?></td>
+                        <td><?= htmlspecialchars($siswa->penghasilan_ortu) ?></td>
+                        <td><?= htmlspecialchars($siswa->jumlah_tanggungan) ?></td>
+                        <td><?= htmlspecialchars($siswa->kepemilikan_rumah) ?></td>
+                        <td><?= htmlspecialchars($siswa->nilai_rapor) ?></td>
+                        <td><?= is_numeric($siswa->nilai_hasil) ? number_format($siswa->nilai_hasil, 4) : '-' ?></td>
+                        <td><?= date('d-M-Y', strtotime($siswa->created_at)) ?></td>
+                    </tr>
+                    <?php endforeach; ?>
 
-                        <?php
-                            $no++;
-                    endforeach
-                    ?>
                 </tbody>
             </table>
         </div>

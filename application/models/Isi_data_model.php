@@ -15,12 +15,20 @@ class Isi_data_model extends CI_Model
     }
     public function recap_all()
     {
-        $this->db->where('status', 0);
-        $this->db->order_by('created_at', 'DESC');
-        $query = $this->db->get('siswa');
+        $this->db->select('
+            siswa.*,
+            alternatif.id_alternatif,
+            hasil.nilai as nilai_hasil
+        ');
+        $this->db->from('siswa');
+        $this->db->where('siswa.status', 0);
+        $this->db->join('alternatif', 'alternatif.siswa_id = siswa.id', 'left');
+        $this->db->join('hasil', 'hasil.id_alternatif = alternatif.id_alternatif', 'left');
+        $this->db->order_by('hasil.nilai', 'DESC');
+        $query = $this->db->get();
         return $query->result();
-
     }
+
     public function get_siswa_by_user($user_id)
     {
         return $this->db->get_where('siswa', ['user_id' => $user_id])->row();

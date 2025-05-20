@@ -52,7 +52,8 @@ window.location = '<?php echo base_url("Login/home"); ?>'
         $sheet->setCellValue('E1', 'Tanggungan Orang Tua');
         $sheet->setCellValue('F1', 'Kepemilikan Rumah');
         $sheet->setCellValue('G1', 'Nilai Rata-Rata Rapor');
-        $sheet->setCellValue('H1', 'Tanggal');
+        $sheet->setCellValue('H1', 'Nilai Rata-Rata Rapor');
+        $sheet->setCellValue('I1', 'Tanggal');
 
         // Isi Data
         $row = 2;
@@ -65,7 +66,8 @@ window.location = '<?php echo base_url("Login/home"); ?>'
             $sheet->setCellValue('E' . $row, $siswa->jumlah_tanggungan);
             $sheet->setCellValue('F' . $row, $siswa->kepemilikan_rumah);
             $sheet->setCellValue('G' . $row, $siswa->nilai_rapor);
-            $sheet->setCellValue('H' . $row, date('d-m-Y', strtotime($siswa->created_at)));
+            $sheet->setCellValue('H' . $row, $siswa->nilai_hasil);
+            $sheet->setCellValue('I' . $row, date('d-m-Y', strtotime($siswa->created_at)));
             $row++;
         }
 
