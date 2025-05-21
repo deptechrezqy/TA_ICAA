@@ -13,11 +13,11 @@ class Isi_data extends CI_Controller
         $this->load->model('Isi_data_model');
 
         if ($this->session->userdata('id_user_level') != "2") {
-            ?>
-<script type="text/javascript">
-alert('Anda tidak berhak mengakses halaman ini!');
-window.location = '<?php echo base_url("Login/home"); ?>'
-</script>
+?>
+            <script type="text/javascript">
+                alert('Anda tidak berhak mengakses halaman ini!');
+                window.location = '<?php echo base_url("Login/home"); ?>'
+            </script>
 <?php
         }
     }
@@ -195,7 +195,7 @@ window.location = '<?php echo base_url("Login/home"); ?>'
         $this->load->model('Isi_data_model');
 
         // Ambil data siswa berdasarkan ID
-        $data['siswa'] = $this->Isi_data_model->get_by_id($id);
+        $data['siswa'] = $this->Isi_data_model->get_by_id_active($id);
 
         if (!$data['siswa']) {
             $this->session->set_flashdata('message', '<div class="alert alert-danger">Data tidak ditemukan!</div>');

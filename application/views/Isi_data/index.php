@@ -14,7 +14,7 @@
     <?php
     // Ambil data siswa berdasarkan user yang sedang login
     $user_id = $this->session->userdata('id_user');
-    $siswa = $this->Isi_data_model->get_siswa_by_user($user_id);
+    $siswa = $this->Isi_data_model->get_by_id_active($user_id);
     ?>
 
     <div class="card-body">
@@ -56,8 +56,8 @@
             </div>
             <div class="form-group col-md-12">
                 <?php if (isset($siswa) && $siswa->verifikasi_file == 2): ?>
-                <br>
-                <span class="text-danger">verifikasi file gagal, harap upload ulang</span>
+                    <br>
+                    <span class="text-danger">verifikasi file gagal, harap upload ulang</span>
                 <?php endif; ?>
             </div>
 
@@ -69,11 +69,11 @@
                 </label><br>
 
                 <?php if (!empty($siswa->file_kip)): ?>
-                <a href="<?= base_url('public/uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">
-                    Lihat File
-                </a>
+                    <a href="<?= base_url('public/uploads/' . $siswa->file_kip); ?>" target="_blank" class="btn btn-info">
+                        Lihat File
+                    </a>
                 <?php else: ?>
-                <p class="text-muted">Tidak ada file diupload</p>
+                    <p class="text-muted">Tidak ada file diupload</p>
                 <?php endif; ?>
             </div>
 
@@ -84,12 +84,12 @@
                 </label><br>
 
                 <?php if (!empty($siswa->file_penghasilan_orang_tua)): ?>
-                <a href="<?= base_url('public/uploads/' . $siswa->file_penghasilan_orang_tua); ?>" target="_blank"
-                    class="btn btn-info">
-                    Lihat File
-                </a>
+                    <a href="<?= base_url('public/uploads/' . $siswa->file_penghasilan_orang_tua); ?>" target="_blank"
+                        class="btn btn-info">
+                        Lihat File
+                    </a>
                 <?php else: ?>
-                <p class="text-muted">Tidak ada file diupload</p>
+                    <p class="text-muted">Tidak ada file diupload</p>
                 <?php endif; ?>
             </div>
 
@@ -100,12 +100,12 @@
                 </label><br>
 
                 <?php if (!empty($siswa->file_tanggungan_orang_tua)): ?>
-                <a href="<?= base_url('public/uploads/' . $siswa->file_tanggungan_orang_tua); ?>" target="_blank"
-                    class="btn btn-info">
-                    Lihat File
-                </a>
+                    <a href="<?= base_url('public/uploads/' . $siswa->file_tanggungan_orang_tua); ?>" target="_blank"
+                        class="btn btn-info">
+                        Lihat File
+                    </a>
                 <?php else: ?>
-                <p class="text-muted">Tidak ada file diupload</p>
+                    <p class="text-muted">Tidak ada file diupload</p>
                 <?php endif; ?>
             </div>
             <div class="form-group col-md-4">
@@ -115,11 +115,11 @@
                 </label><br>
 
                 <?php if (!empty($siswa->file_rumah)): ?>
-                <a href="<?= base_url('public/uploads/' . $siswa->file_rumah); ?>" target="_blank" class="btn btn-info">
-                    Lihat File
-                </a>
+                    <a href="<?= base_url('public/uploads/' . $siswa->file_rumah); ?>" target="_blank" class="btn btn-info">
+                        Lihat File
+                    </a>
                 <?php else: ?>
-                <p class="text-muted">Tidak ada file diupload</p>
+                    <p class="text-muted">Tidak ada file diupload</p>
                 <?php endif; ?>
             </div>
             <div class="form-group col-md-4">
@@ -129,28 +129,28 @@
                 </label><br>
 
                 <?php if (!empty($siswa->file_rapor)): ?>
-                <a href="<?= base_url('public/uploads/' . $siswa->file_rapor); ?>" target="_blank" class="btn btn-info">
-                    Lihat File
-                </a>
+                    <a href="<?= base_url('public/uploads/' . $siswa->file_rapor); ?>" target="_blank" class="btn btn-info">
+                        Lihat File
+                    </a>
                 <?php else: ?>
-                <p class="text-muted">Tidak ada file diupload</p>
+                    <p class="text-muted">Tidak ada file diupload</p>
                 <?php endif; ?>
             </div>
         </div>
 
         <div class="card-footer text-right">
-            <?php if ($siswa) { ?>
-            <?php if ($siswa->verifikasi_file != 1) { ?>
-            <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ? $siswa->id : '')); ?>" class="btn btn-warning">
-                <i class="fa fa-edit"></i> Edit Data
-            </a>
-            <?php } ?>
+            <?php if ($siswa || $siswa) { ?>
+                <?php if ($siswa->verifikasi_file != 1) { ?>
+                    <a href="<?= base_url('Isi_data/edit/' . ($siswa->id ? $siswa->id : '')); ?>" class="btn btn-warning">
+                        <i class="fa fa-edit"></i> Edit Data
+                    </a>
+                <?php } ?>
 
 
             <?php } else { ?>
-            <a href="<?= base_url('Isi_data/create'); ?>" class="btn btn-success">
-                <i class="fa fa-plus"></i> Tambah Data
-            </a>
+                <a href="<?= base_url('Isi_data/create'); ?>" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Tambah Data
+                </a>
             <?php } ?>
         </div>
     </div>

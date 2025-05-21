@@ -11,7 +11,6 @@ class Isi_data_model extends CI_Model
         $this->db->order_by('verifikasi_file', 'ASC');
         $query = $this->db->get('siswa');
         return $query->result();
-
     }
     public function recap_all()
     {
@@ -37,6 +36,11 @@ class Isi_data_model extends CI_Model
     {
         return $this->db->get_where('siswa', ['id' => $id])->row();
     }
+    public function get_by_id_active($id)
+    {
+        return $this->db->get_where('siswa', ['id' => $id, 'status' => 1])->row();
+    }
+
     public function insert($data = [])
     {
         return $this->db->insert('siswa', $data);
